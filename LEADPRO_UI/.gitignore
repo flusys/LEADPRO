@@ -12,6 +12,8 @@ npm-debug.log
 yarn-error.log
 
 # IDEs and editors
+.angular/
+.vscode/
 .idea/
 .project
 .classpath
@@ -40,4 +42,4 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
-.vscode
+package-lock.json
