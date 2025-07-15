@@ -24,6 +24,11 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "input": "node_modules/@flusys/flusysng/assets",
+                "glob": "**/*",
+                "output": "lib/assets/"
               }
             ],
             "styles": [
@@ -83,6 +88,11 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "input": "node_modules/@flusys/flusysng/assets",
+                "glob": "**/*",
+                "output": "lib/assets/"
               }
             ],
             "styles": [
