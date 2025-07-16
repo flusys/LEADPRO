@@ -20,7 +20,7 @@ export class App {
     this.authStateService.currentCompanyInfo.update((prev) => {
       return {
         ...prev,
-        ...{ appName: "LEADPRO" }
+        ...{ appName: "LEADPRO", name: 'Leadpro' }
       }
     })
   }

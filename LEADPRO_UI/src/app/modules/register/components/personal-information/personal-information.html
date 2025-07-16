@@ -1,0 +1,178 @@
+<form [formGroup]="registrationFormService.formGroup" class="mt-4" (ngSubmit)="submit()">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+
+    <!-- Full Name -->
+    <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
+      <label for="fullName">Full Name</label>
+      <input pInputText formControlName="fullName" id="fullName" class="w-full" type="text" />
+      @if (getError('fullName')) {
+      <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('fullName') }}</small>
+      }
+    </div>
+
+    <!-- Father Name -->
+    <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
+      <label for="fatherName">Father's Name</label>
+      <input pInputText formControlName="fatherName" id="fatherName" class="w-full" type="text" />
+      @if (getError('fatherName')) {
+      <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('fatherName') }}</small>
+      }
+    </div>
+
+    <!-- Mother Name -->
+    <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
+      <label for="motherName">Mother's Name</label>
+      <input pInputText formControlName="motherName" id="motherName" class="w-full" type="text" />
+      @if (getError('motherName')) {
+      <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('motherName') }}</small>
+      }
+    </div>
+
+    <!-- Marital Status -->
+    <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
+      <label for="maritalStatus">Marital Status</label>
+      <p-select [options]="maritalStatusOptions" formControlName="maritalStatus" id="maritalStatus"
+        placeholder="Select one" class="w-full"></p-select>
+      @if (getError('maritalStatus')) {
+      <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('maritalStatus') }}</small>
+      }
+    </div>
+
+    <!-- Email -->
+    <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
+      <label for="email">Email</label>
+      <input pInputText formControlName="email" id="email" class="w-full" type="email" />
+      @if (getError('email')) {
+      <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('email') }}</small>
+      }
+    </div>
+
+    <!-- Phone -->
+    <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
+      <label for="phoneNumber">Phone Number</label>
+      <input pInputText formControlName="phoneNumber" id="phoneNumber" class="w-full" type="text" />
+      @if (getError('phoneNumber')) {
+      <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('phoneNumber') }}</small>
+      }
+    </div>
+
+    <!-- Profession -->
+    <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
+      <label for="profession">Profession</label>
+      <input pInputText formControlName="profession" id="profession" class="w-full" type="text" />
+      @if (getError('profession')) {
+      <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('profession') }}</small>
+      }
+    </div>
+
+    <!-- Reference User ID -->
+    <div class="flex flex-col gap-2 w-full  min-h-[66px]">
+      <label for="referenceUserId">Reference User ID</label>
+      <input pInputText formControlName="referenceUserId" id="referenceUserId" class="w-full" type="text" />
+    </div>
+
+    <!-- Present Address -->
+    <div class="relative flex flex-col gap-2 w-full min-h-[100px]">
+      <label for="presentAddress">Present Address</label>
+      <textarea pInputTextarea formControlName="presentAddress" id="presentAddress" class="w-full" rows="2"></textarea>
+      @if (getError('presentAddress')) {
+      <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('presentAddress') }}</small>
+      }
+    </div>
+
+    <!-- Permanent Address -->
+    <div class="relative flex flex-col gap-2 w-full min-h-[100px]">
+      <label for="permanentAddress">Permanent Address</label>
+      <textarea pInputTextarea formControlName="permanentAddress" id="permanentAddress" class="w-full"
+        rows="2"></textarea>
+      @if (getError('permanentAddress')) {
+      <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('permanentAddress') }}</small>
+      }
+    </div>
+
+    <!-- Nominee Name -->
+    <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
+      <label for="nomineeName">Nominee Name</label>
+      <input pInputText formControlName="nomineeName" id="nomineeName" class="w-full" type="text" />
+      @if (getError('nomineeName')) {
+      <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('nomineeName') }}</small>
+      }
+    </div>
+
+    <!-- Relation with Nominee -->
+    <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
+      <label for="relationWithNominee">Relation with Nominee</label>
+      <input pInputText formControlName="relationWithNominee" id="relationWithNominee" class="w-full" type="text" />
+      @if (getError('relationWithNominee')) {
+      <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('relationWithNominee') }}</small>
+      }
+    </div>
+
+    <!-- Comments -->
+    <div class="flex flex-col gap-2 w-full">
+      <label for="comments">Comments</label>
+      <textarea pInputTextarea formControlName="comments" id="comments" class="w-full" rows="2"></textarea>
+    </div>
+
+    <!-- Personal Photo Upload -->
+    <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
+      <label>Personal Photo</label>
+      <input type="file" accept="image/*" (change)="onFileChange($event, 'personalPhoto')" />
+      @if (getError('personalPhoto')) {
+      <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('personalPhoto') }}</small>
+      }
+    </div>
+
+    <!-- NID Upload -->
+    <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
+      <label>NID File/Photo with Signature</label>
+      <input type="file" accept="image/*,application/pdf" (change)="onFileChange($event, 'nidPhoto')" />
+      @if (getError('nidPhoto')) {
+      <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('nidPhoto') }}</small>
+      }
+    </div>
+
+    <!-- Nominee NID Upload -->
+    <div class="flex flex-col gap-2 w-full">
+      <label>Nominee NID File/Photo</label>
+      <input type="file" accept="image/*,application/pdf" (change)="onFileChange($event, 'nomineeNidPhoto')" />
+    </div>
+  </div>
+
+  <!-- Password Section Divider -->
+  <p-divider type="solid"><b>Password</b></p-divider>
+
+  <!-- Password Fields -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+
+    <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
+      <label for="password">Password</label>
+      <input pInputText formControlName="password" id="password" class="w-full" type="password" />
+      @if (getError('password')) {
+      <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('password') }}</small>
+      }
+    </div>
+
+    <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
+      <label for="confirmPassword">Confirm Password</label>
+      <input pInputText formControlName="confirmPassword" id="confirmPassword" class="w-full" type="password" />
+      @if (getError('confirmPassword')) {
+      <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('confirmPassword') }}</small>
+      }
+    </div>
+
+    <!-- Password Match Error -->
+    <div class="col-span-2">
+      @if (registrationFormService.formGroup.errors?.['passwordMismatch']) {
+      <small class="text-red-500 text-xs block mt-1">Password and Confirm Password do not match.</small>
+      }
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="flex gap-2 justify-end mt-5">
+    <button pButton type="submit" label="Submit" icon="pi pi-check"
+      [disabled]="registrationFormService.formGroup.invalid"></button>
+    <button pButton type="button" label="Clear" icon="pi pi-trash" (click)="clear()"></button>
+  </div>
+</form>
