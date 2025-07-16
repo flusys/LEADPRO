@@ -3,7 +3,7 @@
 
     <!-- Full Name -->
     <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
-      <label for="fullName">Full Name</label>
+      <label for="fullName">Full Name <span class="text-red-500">*</span></label>
       <input pInputText formControlName="fullName" id="fullName" class="w-full" type="text" />
       @if (getError('fullName')) {
       <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('fullName') }}</small>
@@ -12,7 +12,7 @@
 
     <!-- Father Name -->
     <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
-      <label for="fatherName">Father's Name</label>
+      <label for="fatherName">Father's Name <span class="text-red-500">*</span></label>
       <input pInputText formControlName="fatherName" id="fatherName" class="w-full" type="text" />
       @if (getError('fatherName')) {
       <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('fatherName') }}</small>
@@ -21,7 +21,7 @@
 
     <!-- Mother Name -->
     <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
-      <label for="motherName">Mother's Name</label>
+      <label for="motherName">Mother's Name <span class="text-red-500">*</span></label>
       <input pInputText formControlName="motherName" id="motherName" class="w-full" type="text" />
       @if (getError('motherName')) {
       <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('motherName') }}</small>
@@ -30,7 +30,7 @@
 
     <!-- Marital Status -->
     <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
-      <label for="maritalStatus">Marital Status</label>
+      <label for="maritalStatus">Marital Status <span class="text-red-500">*</span></label>
       <p-select [options]="maritalStatusOptions" formControlName="maritalStatus" id="maritalStatus"
         placeholder="Select one" class="w-full"></p-select>
       @if (getError('maritalStatus')) {
@@ -40,7 +40,7 @@
 
     <!-- Email -->
     <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
-      <label for="email">Email</label>
+      <label for="email">Email <span class="text-red-500">*</span></label>
       <input pInputText formControlName="email" id="email" class="w-full" type="email" />
       @if (getError('email')) {
       <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('email') }}</small>
@@ -49,7 +49,7 @@
 
     <!-- Phone -->
     <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
-      <label for="phoneNumber">Phone Number</label>
+      <label for="phoneNumber">Phone Number <span class="text-red-500">*</span></label>
       <input pInputText formControlName="phoneNumber" id="phoneNumber" class="w-full" type="text" />
       @if (getError('phoneNumber')) {
       <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('phoneNumber') }}</small>
@@ -58,7 +58,7 @@
 
     <!-- Profession -->
     <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
-      <label for="profession">Profession</label>
+      <label for="profession">Profession <span class="text-red-500">*</span></label>
       <input pInputText formControlName="profession" id="profession" class="w-full" type="text" />
       @if (getError('profession')) {
       <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('profession') }}</small>
@@ -73,7 +73,7 @@
 
     <!-- Present Address -->
     <div class="relative flex flex-col gap-2 w-full min-h-[100px]">
-      <label for="presentAddress">Present Address</label>
+      <label for="presentAddress">Present Address <span class="text-red-500">*</span></label>
       <textarea pInputTextarea formControlName="presentAddress" id="presentAddress" class="w-full" rows="2"></textarea>
       @if (getError('presentAddress')) {
       <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('presentAddress') }}</small>
@@ -82,7 +82,7 @@
 
     <!-- Permanent Address -->
     <div class="relative flex flex-col gap-2 w-full min-h-[100px]">
-      <label for="permanentAddress">Permanent Address</label>
+      <label for="permanentAddress">Permanent Address <span class="text-red-500">*</span></label>
       <textarea pInputTextarea formControlName="permanentAddress" id="permanentAddress" class="w-full"
         rows="2"></textarea>
       @if (getError('permanentAddress')) {
@@ -92,7 +92,7 @@
 
     <!-- Nominee Name -->
     <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
-      <label for="nomineeName">Nominee Name</label>
+      <label for="nomineeName">Nominee Name <span class="text-red-500">*</span></label>
       <input pInputText formControlName="nomineeName" id="nomineeName" class="w-full" type="text" />
       @if (getError('nomineeName')) {
       <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('nomineeName') }}</small>
@@ -101,7 +101,7 @@
 
     <!-- Relation with Nominee -->
     <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
-      <label for="relationWithNominee">Relation with Nominee</label>
+      <label for="relationWithNominee">Relation with Nominee <span class="text-red-500">*</span></label>
       <input pInputText formControlName="relationWithNominee" id="relationWithNominee" class="w-full" type="text" />
       @if (getError('relationWithNominee')) {
       <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('relationWithNominee') }}</small>
@@ -116,7 +116,7 @@
 
     <!-- Personal Photo Upload -->
     <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
-      <label>Personal Photo</label>
+      <label>Personal Photo <span class="text-red-500">*</span></label>
       <input type="file" accept="image/*" (change)="onFileChange($event, 'personalPhoto')" />
       @if (getError('personalPhoto')) {
       <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('personalPhoto') }}</small>
@@ -125,7 +125,7 @@
 
     <!-- NID Upload -->
     <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
-      <label>NID File/Photo with Signature</label>
+      <label>NID File/Photo with Signature <span class="text-red-500">*</span></label>
       <input type="file" accept="image/*,application/pdf" (change)="onFileChange($event, 'nidPhoto')" />
       @if (getError('nidPhoto')) {
       <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('nidPhoto') }}</small>
@@ -134,7 +134,7 @@
 
     <!-- Nominee NID Upload -->
     <div class="flex flex-col gap-2 w-full">
-      <label>Nominee NID File/Photo</label>
+      <label>Nominee NID File/Photo <span class="text-red-500">*</span></label>
       <input type="file" accept="image/*,application/pdf" (change)="onFileChange($event, 'nomineeNidPhoto')" />
     </div>
   </div>
@@ -146,7 +146,7 @@
   <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
 
     <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
-      <label for="password">Password</label>
+      <label for="password">Password <span class="text-red-500">*</span></label>
       <input pInputText formControlName="password" id="password" class="w-full" type="password" />
       @if (getError('password')) {
       <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('password') }}</small>
@@ -154,7 +154,7 @@
     </div>
 
     <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
-      <label for="confirmPassword">Confirm Password</label>
+      <label for="confirmPassword">Confirm Password <span class="text-red-500">*</span></label>
       <input pInputText formControlName="confirmPassword" id="confirmPassword" class="w-full" type="password" />
       @if (getError('confirmPassword')) {
       <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('confirmPassword') }}</small>
