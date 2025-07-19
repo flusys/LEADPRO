@@ -10,7 +10,6 @@ export interface RegistrationFormData {
     permanentAddress: string;
     phoneNumber: string;
     profession: string;
-    referenceUserId: string;
     idNo: string;
     nomineeName: string;
     relationWithNominee: string;

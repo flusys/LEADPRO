@@ -12,7 +12,6 @@ export interface IRegistrationForm {
     permanentAddress: FormControl<string>;
     phoneNumber: FormControl<string>;
     profession: FormControl<string>;
-    referenceUserId: FormControl<string>;
     nomineeName: FormControl<string>;
     relationWithNominee: FormControl<string>;
     nomineeNidPhoto: FormControl<File | null>;

@@ -62,9 +62,6 @@ export class RegisterForm extends FormCommonClass<IRegistrationForm> {
         nonNullable: true,
         validators: Validators.required,
       }),
-      referenceUserId: new FormControl('', {
-        nonNullable: true,
-      }),
       nomineeName: new FormControl('', {
         nonNullable: true,
         validators: Validators.required,
