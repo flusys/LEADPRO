@@ -10,6 +10,7 @@ import { AppService } from './app.service';
 import { AppRoutingModule } from './app-routing.module';
 import { SettingsModule, CompanyModule, AuthModule, GalleryModule } from '@flusys/flusysnest/pages';
 import { appconfig, appDataSource } from './app.config';
+import { RegistrationModule } from './modules/registration/registration.module';
 
 @Module({
   imports: [
@@ -24,12 +25,13 @@ import { appconfig, appDataSource } from './app.config';
     }),
 
     TypeOrmModule.forRoot(appDataSource.options),
+    RegistrationModule,
+    
     AppRoutingModule,
-
     AuthModule,
     SettingsModule,
     CompanyModule,
-    GalleryModule,
+    GalleryModule
   ],
   controllers: [AppController],
   providers: [AppService, JwtService,

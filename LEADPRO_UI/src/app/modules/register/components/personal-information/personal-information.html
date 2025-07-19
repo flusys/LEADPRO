@@ -66,19 +66,19 @@
     </div>
 
     <!-- Present Address -->
-    <div class="relative flex flex-col gap-2 w-full min-h-[100px]">
+    <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
       <label for="presentAddress">Present Address <span class="text-red-500">*</span></label>
-      <textarea pInputTextarea formControlName="presentAddress" id="presentAddress" class="w-full" rows="2"></textarea>
+      <textarea pInputTextarea formControlName="presentAddress" id="presentAddress" class="w-full" rows="1"></textarea>
       @if (getError('presentAddress')) {
       <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('presentAddress') }}</small>
       }
     </div>
 
     <!-- Permanent Address -->
-    <div class="relative flex flex-col gap-2 w-full min-h-[100px]">
+    <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
       <label for="permanentAddress">Permanent Address <span class="text-red-500">*</span></label>
       <textarea pInputTextarea formControlName="permanentAddress" id="permanentAddress" class="w-full"
-        rows="2"></textarea>
+        rows="1"></textarea>
       @if (getError('permanentAddress')) {
       <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('permanentAddress') }}</small>
       }
@@ -105,7 +105,7 @@
     <!-- Comments -->
     <div class="flex flex-col gap-2 w-full">
       <label for="comments">Comments</label>
-      <textarea pInputTextarea formControlName="comments" id="comments" class="w-full" rows="2"></textarea>
+      <textarea pInputTextarea formControlName="comments" id="comments" class="w-full" rows="1"></textarea>
     </div>
 
     <!-- Personal Photo Upload -->
