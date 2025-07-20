@@ -10,13 +10,15 @@ export const appDataSource = new DataSource({
     password: '123456',
     database: 'LEADPRO',
     entities: [
-        __dirname + '/**/*.entity{.ts,.js}',
-        ...ENTITY_ARRAY
+        ...ENTITY_ARRAY,
+        __dirname + '/**/*.entity{.ts,.js}'
     ],
     migrationsTableName: 'migrations',
     migrations: [
         __dirname + '/migrations/*{.ts,.js}'
     ],
+    migrationsRun: false,
+    synchronize: false,
     namingStrategy: new SnakeNamingStrategy(),
 });
 

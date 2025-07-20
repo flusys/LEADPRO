@@ -3,12 +3,11 @@ import {
     Column,
     ManyToOne,
     JoinColumn,
-    BaseEntity,
 } from 'typeorm';
-import { Gallery, User } from '@flusys/flusysnest/persistence/entities'
+import { Gallery, User, Identity } from '@flusys/flusysnest/persistence/entities'
 
 @Entity('user_personal_info')
-export class UserPersonalInfo extends BaseEntity {
+export class UserPersonalInfo extends Identity {
 
     @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
     @JoinColumn({ name: 'user_id' })
@@ -48,5 +47,9 @@ export class UserPersonalInfo extends BaseEntity {
 
     @Column({ type: 'text', nullable: true })
     comments: string;
+
+    @ManyToOne(() => User, { nullable: true, onDelete: 'SET NULL' })
+    @JoinColumn({ name: 'refer_user_id' })
+    referUser: User;
 
 }
