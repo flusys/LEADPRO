@@ -1,15 +1,13 @@
 import { Component, ElementRef, inject, viewChild, viewChildren } from '@angular/core';
 import { RegisterForm } from '../../services/register-form';
 import { AngularModule, PrimeModule } from '@flusys/flusysng/shared/modules';
-import { DividerModule } from 'primeng/divider';
 import { NgForm, FormControlName } from '@angular/forms';
 
 @Component({
   selector: 'app-personal-information',
   imports: [
     AngularModule,
-    PrimeModule,
-    DividerModule
+    PrimeModule
   ],
   templateUrl: './personal-information.html',
   styleUrl: './personal-information.scss'
