@@ -2,6 +2,8 @@ import { Component, ElementRef, inject, viewChild, viewChildren } from '@angular
 import { RegisterForm } from '../../services/register-form';
 import { AngularModule, PrimeModule } from '@flusys/flusysng/shared/modules';
 import { NgForm, FormControlName } from '@angular/forms';
+import { RegisterApi } from '../../services/register-api';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-personal-information',
@@ -13,7 +15,7 @@ import { NgForm, FormControlName } from '@angular/forms';
   styleUrl: './personal-information.scss'
 })
 export class PersonalInformation {
-
+  registerApi = inject(RegisterApi)
   readonly inputForm = viewChild.required<NgForm>('inputForm');
   readonly formControls = viewChildren(FormControlName, { read: ElementRef });
 
@@ -24,6 +26,7 @@ export class PersonalInformation {
     { label: 'Married', value: 'Married' },
     { label: 'Divorced', value: 'Divorced' },
   ];
+
   onFileChange(event: Event, field: 'personalPhoto' | 'nidPhoto' | 'nomineeNidPhoto') {
     const input = event.target as HTMLInputElement;
     if (input?.files?.length) {
@@ -31,10 +34,23 @@ export class PersonalInformation {
     }
   }
 
+  subscription!: Subscription;
 
   submit() {
     if (this.registrationFormService.formGroup.valid) {
-      const formData = this.registrationFormService.formGroup.value;
+      const data = this.registrationFormService.formGroup.value;
+
+      const formData = new FormData();
+      Object.entries(data).forEach(([key, value]) => {
+        formData.append(key, value as string);
+      });
+      formData.append('folderPath', data.fullName as string);
+
+      this.registerApi.registration(formData).subscribe({
+        next: (res) => {
+          console.warn(res);
+        }
+      })
       console.log('Form Submitted', formData);
     } else {
       if (this.registrationFormService.formGroup.invalid) {

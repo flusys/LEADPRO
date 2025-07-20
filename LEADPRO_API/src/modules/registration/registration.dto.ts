@@ -3,6 +3,7 @@ import {
   IsEmail,
   IsEnum,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   MinLength,
@@ -14,16 +15,6 @@ export class RegistrationDto {
   @IsNotEmpty()
   @IsString()
   fullName: string;
-
-  @ApiProperty({ type: 'string', format: 'binary', required: true })
-  @IsNotEmpty()
-  @Type(() => Object)
-  personalPhoto: Express.Multer.File;
-
-  @ApiProperty({ type: 'string', format: 'binary', required: true })
-  @IsNotEmpty()
-  @Type(() => Object)
-  nidPhoto: Express.Multer.File;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -74,11 +65,6 @@ export class RegistrationDto {
   @IsNotEmpty()
   @IsString()
   relationWithNominee: string;
-
-  @ApiProperty({ type: 'string', format: 'binary', required: true })
-  @IsNotEmpty()
-  @Type(() => Object)
-  nomineeNidPhoto: Express.Multer.File;
 
   @ApiProperty({ required: false })
   @IsOptional()

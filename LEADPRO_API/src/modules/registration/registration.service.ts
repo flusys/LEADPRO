@@ -9,12 +9,15 @@ import {
 import { User } from '@flusys/flusysnest/persistence/entities';
 import { IUser } from '@flusys/flusysnest/modules/settings/interfaces';
 import { RegistrationDto } from './registration.dto';
+import { UserPersonalInfo } from './user-personal-info.entity';
 
 @Injectable()
 export class RegistrationService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(UserPersonalInfo)
+    private readonly userPersonalInfoRepository: Repository<UserPersonalInfo>,
     private utilsService: UtilsService,
   ) {
   }
