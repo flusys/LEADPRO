@@ -19,4 +19,7 @@ export interface IRegistrationForm {
     password: FormControl<string>;
     confirmPassword: FormControl<string>;
 
+    // Hidden
+    companyReferCode: FormControl<string | null>;
+
 }

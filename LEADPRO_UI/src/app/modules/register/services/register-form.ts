@@ -3,6 +3,7 @@ import { IRegistrationForm } from '../interfaces/register-form.interface';
 import { FormCommonClass } from '@flusys/flusysng/shared/classes';
 import { FormGroup, FormControl, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { MessageService } from 'primeng/api';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -83,6 +84,7 @@ export class RegisterForm extends FormCommonClass<IRegistrationForm> {
         nonNullable: true,
         validators: Validators.required,
       }),
+      companyReferCode: new FormControl<string>(environment.companyReferCode),
     });
     this.formGroup.setValidators(this.passwordMatchValidator);
   }

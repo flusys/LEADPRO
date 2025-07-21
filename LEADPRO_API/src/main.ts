@@ -10,9 +10,9 @@ async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
 
-  //Seed Package Data;
+  // Seed Package Data;
   // const dataSource = app.get(DataSource);
-  // await seedData(dataSource);
+  // await seedData(dataSource, 'Lead Pro', 'lead_pro');
 
   app.enableCors({
     origin: process.env.ORIGIN?.split(','),

@@ -6,7 +6,7 @@ import * as bcrypt from 'bcrypt';
 import {
   IResponsePayload
 } from '@flusys/flusysnest/shared/interfaces';
-import { Gallery, User } from '@flusys/flusysnest/persistence/entities';
+import { Company, CompanyBranch, Gallery, User, UserCompany, UserCompanyBranch } from '@flusys/flusysnest/persistence/entities';
 import { IUser } from '@flusys/flusysnest/modules/settings/interfaces';
 import { RegistrationDto } from './registration.dto';
 import { UserPersonalInfo } from './user-personal-info.entity';
@@ -61,6 +61,28 @@ export class RegistrationService {
         throw new BadRequestException('Passwords do not match');
       }
 
+
+      let company: Company | null = null;
+      let companyBranch: CompanyBranch | null = null;
+      if (!userRegister.companyReferCode) {
+        return {
+          success: false,
+          message: 'Please Provide Refer Company',
+        };
+      }
+      company = await queryRunner.manager.findOne(Company, { where: { slug: userRegister.companyReferCode } });
+      if (!company) {
+        await queryRunner.rollbackTransaction();
+        return {
+          success: false,
+          message: 'Please Provide Valid Refer Id',
+        };
+      }
+      const allCompanyBranches = await queryRunner.manager.find(CompanyBranch, { where: { company: { id: company.id } } });
+      if (allCompanyBranches.length === 1) {
+        companyBranch = allCompanyBranches[0];
+      }
+
       // Mark photos as private
       photoObjectArray = photoObjectArray.map((item): IGallery => ({
         ...item,
@@ -103,6 +125,27 @@ export class RegistrationService {
         nomineeNidPhoto: nomineeNidPhoto,
         comments: userRegister.comments,
       });
+
+
+      // Save UserCompany
+      const userCompany = queryRunner.manager.create(UserCompany, {
+        user: savedUser,
+        company,
+        isActive: false,
+        readOnly: false,
+      });
+      await queryRunner.manager.save(userCompany);
+      // Save UserCompanyBranch
+      if (companyBranch) {
+        const userCompanyBranch = queryRunner.manager.create(UserCompanyBranch, {
+          user: savedUser,
+          company,
+          companyBranch,
+          isActive: true,
+          readOnly: false,
+        });
+        await queryRunner.manager.save(userCompanyBranch);
+      }
 
       await queryRunner.manager.save(userPersonalInfo);
       await queryRunner.commitTransaction();

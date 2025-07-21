@@ -80,4 +80,9 @@ export class RegistrationDto {
   @IsNotEmpty()
   @MinLength(6)
   confirmPassword: string;
+
+
+  @ApiProperty()
+  @IsNotEmpty()
+  companyReferCode: string;
 }
