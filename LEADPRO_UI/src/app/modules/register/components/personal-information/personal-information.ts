@@ -4,6 +4,7 @@ import { AngularModule, PrimeModule } from '@flusys/flusysng/shared/modules';
 import { NgForm, FormControlName } from '@angular/forms';
 import { RegisterApi } from '../../services/register-api';
 import { Subscription } from 'rxjs';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-personal-information',
@@ -21,6 +22,7 @@ export class PersonalInformation {
 
 
   registrationFormService = inject(RegisterForm)
+  messageService = inject(MessageService)
   maritalStatusOptions = [
     { label: 'Single', value: 'Single' },
     { label: 'Married', value: 'Married' },
@@ -44,13 +46,35 @@ export class PersonalInformation {
       Object.entries(data).forEach(([key, value]) => {
         formData.append(key, value as string);
       });
-      formData.append('folderPath', data.fullName as string);
-
-      this.registerApi.registration(formData).subscribe({
+      this.registerApi.registration(formData, data.fullName?.replaceAll(' ', '_')).subscribe({
         next: (res) => {
-          console.warn(res);
-        }
-      })
+          if (res.success) {
+            this.messageService.add({
+              key: 'tst',
+              severity: 'success',
+              summary: 'Registration Successful',
+              detail: res.message,
+            });
+          } else {
+            this.messageService.add({
+              key: 'tst',
+              severity: 'warn',
+              summary: 'Registration Failed',
+              detail: res.message || 'Something went wrong',
+            });
+          }
+        },
+        error: (err) => {
+          console.error(err);
+          this.messageService.add({
+            key: 'tst',
+            severity: 'error',
+            summary: 'Server Error',
+            detail: err.error?.message || 'Unexpected error occurred',
+          });
+        },
+      });
+
       console.log('Form Submitted', formData);
     } else {
       if (this.registrationFormService.formGroup.invalid) {

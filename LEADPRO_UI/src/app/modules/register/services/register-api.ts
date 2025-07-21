@@ -11,7 +11,7 @@ export class RegisterApi {
   http = inject(HttpClient);
   constructor() {
   }
-  registration(body: FormData) {
-    return this.http.post<IResponsePayload<number>>(this.baseUrl + '/registration', body);
+  registration(body: FormData,folderName?:string) {
+    return this.http.post<IResponsePayload<number>>(this.baseUrl + `/registration?folderPath=${folderName}`, body);
   }
 }

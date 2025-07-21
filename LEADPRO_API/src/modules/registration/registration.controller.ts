@@ -39,8 +39,8 @@ export class RegistrationController {
       { name: 'nomineeNidPhoto', maxCount: 1 },
     ], {
       storage: diskStorage({
-        destination: getUploadPath,
         filename: editFileName,
+        destination: getUploadPath,
       }),
     }),
   )
@@ -48,15 +48,16 @@ export class RegistrationController {
     @Body() registrationDto: RegistrationDto,
     @UploadedFiles()
     files: {
-      personalPhoto?: Express.Multer.File[];
-      nidPhoto?: Express.Multer.File[];
-      nomineeNidPhoto?: Express.Multer.File[];
+      personalPhoto: Express.Multer.File[];
+      nidPhoto: Express.Multer.File[];
+      nomineeNidPhoto: Express.Multer.File[];
     },
     @Req() req,
   ): Promise<IResponsePayload<IUser>> {
-    console.warn(files)
-    const response = this.uploadService.makeFileResponseObject(files, req);
-    console.warn(response)
-    return await this.registrationService.registerUser(registrationDto);
+    const personalPhoto = this.uploadService.makeFileResponseObject(files.personalPhoto, req);
+    const nidPhoto = this.uploadService.makeFileResponseObject(files.nidPhoto, req);
+    const nomineeNidPhoto = this.uploadService.makeFileResponseObject(files.nomineeNidPhoto, req);
+    const photoObjectArray = [personalPhoto[0], nidPhoto[0], nomineeNidPhoto[0]];
+    return await this.registrationService.registerUser(photoObjectArray,registrationDto);
   }
 }
