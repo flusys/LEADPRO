@@ -1,9 +1,10 @@
-import { BadRequestException, ConflictException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryFailedError, Repository } from 'typeorm';
 import { UtilsService } from '@flusys/flusysnest/shared/services';
 import * as bcrypt from 'bcrypt';
 import {
+  ILoggedUserInfo,
   IResponsePayload
 } from '@flusys/flusysnest/shared/interfaces';
 import { Company, CompanyBranch, Gallery, User, UserCompany, UserCompanyBranch } from '@flusys/flusysnest/persistence/entities';
@@ -14,6 +15,7 @@ import { IGallery } from '@flusys/flusysnest/modules/gallery/interfaces';
 import { FileTypes } from '@flusys/flusysnest/shared/enums';
 import * as fs from 'fs';
 import { join } from 'path';
+import { IProfileInfo } from './profile-info-data.interface';
 
 @Injectable()
 export class RegistrationService {
@@ -168,6 +170,35 @@ export class RegistrationService {
       throw new InternalServerErrorException(error.message);
     } finally {
       await queryRunner.release();
+    }
+  }
+
+
+  async findById(userId: number, user: ILoggedUserInfo,): Promise<IResponsePayload<IProfileInfo>> {
+    try {
+      if (!userId) {
+        userId = user.id;
+      }
+      const userInformation = await this.userPersonalInfoRepository.findOne({
+        where: { user: { id: userId } },
+        relations: ['user', 'nidPhoto', 'nomineeNidPhoto', 'referUser'],
+      });
+      
+      return {
+        success: true,
+        message: 'User Found',
+        result: userInformation,
+      } as unknown as IResponsePayload<IProfileInfo>;
+    } catch (error: any) {
+      console.log(error);
+      if (error instanceof QueryFailedError) {
+        if (error.driverError.errno == 1062) {
+          throw new QueryFailedError("Duplicate Entry Error", [], error);
+        }
+        throw new QueryFailedError(error.message, [], error);
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
     }
   }
 

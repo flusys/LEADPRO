@@ -3,9 +3,9 @@ import { LIB_ROUTERS } from '@flusys/flusysng/core/routes';
 
 const baseRoutes: Routes = [
   {
-    path: '',
-    loadComponent: () => import('./pages/register/register')
-      .then(com => com.Register),
+    path: 'profile',
+    loadComponent: () => import('./pages/profile/profile')
+      .then(com => com.Profile),
   },
 ]
 const authRoutes: Routes = [
@@ -16,5 +16,5 @@ const authRoutes: Routes = [
   },
 ]
 export const routes: Routes = [
-  ...LIB_ROUTERS(authRoutes, []),
+  ...LIB_ROUTERS(authRoutes, baseRoutes),
 ];
