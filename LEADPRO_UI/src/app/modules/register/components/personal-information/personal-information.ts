@@ -5,6 +5,7 @@ import { NgForm, FormControlName } from '@angular/forms';
 import { RegisterApi } from '../../services/register-api';
 import { Subscription } from 'rxjs';
 import { MessageService } from 'primeng/api';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-personal-information',
@@ -16,7 +17,8 @@ import { MessageService } from 'primeng/api';
   styleUrl: './personal-information.scss'
 })
 export class PersonalInformation {
-  registerApi = inject(RegisterApi)
+  registerApi = inject(RegisterApi);
+  router = inject(Router)
   readonly inputForm = viewChild.required<NgForm>('inputForm');
   readonly formControls = viewChildren(FormControlName, { read: ElementRef });
 
@@ -49,12 +51,14 @@ export class PersonalInformation {
       this.registerApi.registration(formData, data.fullName?.replaceAll(' ', '_')).subscribe({
         next: (res) => {
           if (res.success) {
+            this.clear();
             this.messageService.add({
               key: 'tst',
               severity: 'success',
               summary: 'Registration Successful',
               detail: res.message,
             });
+            this.router.navigate(['/auth/login']);
           } else {
             this.messageService.add({
               key: 'tst',
@@ -74,8 +78,6 @@ export class PersonalInformation {
           });
         },
       });
-
-      console.log('Form Submitted', formData);
     } else {
       if (this.registrationFormService.formGroup.invalid) {
         this.registrationFormService.focusFirstInvalidInput(this.formControls() as ElementRef<any>[]);
