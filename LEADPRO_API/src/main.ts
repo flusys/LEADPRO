@@ -4,7 +4,8 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 import { DataSource } from 'typeorm';
 import { AppModule } from './app.module';
-import { seedData } from '@flusys/flusysnest/shared/data';
+import { seedData } from '@flusys/flusysnest/core/data';
+import { envConfig } from '@flusys/flusysnest/core/config';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
@@ -15,7 +16,7 @@ async function bootstrap() {
   // await seedData(dataSource, 'Lead Pro', 'lead_pro');
 
   app.enableCors({
-    origin: process.env.ORIGIN?.split(','),
+    origin: envConfig.getOrigins(),
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     allowedHeaders: 'Content-Type, Authorization',

@@ -84,7 +84,7 @@ export class RegisterForm extends FormCommonClass<IRegistrationForm> {
         nonNullable: true,
         validators: Validators.required,
       }),
-      companyReferCode: new FormControl<string>(environment.companyReferCode),
+      organizationReferCode: new FormControl<string>(environment.organizationReferCode),
     });
     this.formGroup.setValidators(this.passwordMatchValidator);
   }

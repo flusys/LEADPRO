@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   UploadedFiles,
   UseGuards,
@@ -22,7 +23,7 @@ import { RegistrationDto } from './registration.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { editFileName, getUploadPath, UploadService } from '@flusys/flusysnest/modules/gallery/apis';
-import { JwtAuthGuard } from "@flusys/flusysnest/shared/guards";
+import { JwtAuthGuard } from "@flusys/flusysnest/core/guards";
 import { IProfileInfo } from './profile-info-data.interface';
 import { User } from "@flusys/flusysnest/shared/decorators";
 import { ProfileInfoDto } from './registration-info.dto';
@@ -44,12 +45,7 @@ export class RegistrationController {
       { name: 'personalPhoto', maxCount: 1 },
       { name: 'nidPhoto', maxCount: 1 },
       { name: 'nomineeNidPhoto', maxCount: 1 },
-    ], {
-      storage: diskStorage({
-        filename: editFileName,
-        destination: getUploadPath,
-      }),
-    }),
+    ]),
   )
   async registration(
     @Body() registrationDto: RegistrationDto,
@@ -60,12 +56,17 @@ export class RegistrationController {
       nomineeNidPhoto: Express.Multer.File[];
     },
     @Req() req,
+    @Query('folderPath') folderPath: string
   ): Promise<IResponsePayload<IUser>> {
-    const personalPhoto = this.uploadService.makeFileResponseObject(files.personalPhoto, req);
-    const nidPhoto = this.uploadService.makeFileResponseObject(files.nidPhoto, req);
-    const nomineeNidPhoto = this.uploadService.makeFileResponseObject(files.nomineeNidPhoto, req);
-    const photoObjectArray = [personalPhoto[0], nidPhoto[0], nomineeNidPhoto[0]];
-    return await this.registrationService.registerUser(photoObjectArray, registrationDto);
+    const photoObjectArray = [files.personalPhoto[0], files.nidPhoto[0], files.nomineeNidPhoto[0]];
+    const urls = await this.uploadService.uploadMultipleFiles(photoObjectArray, folderPath);
+    const formattedUrls = this.uploadService.makeFileResponseUrl(urls, req) as string[];
+    const responseObject = photoObjectArray.map((file, index) => ({
+      size: this.uploadService.bytesToKb(file.size),
+      name: file.originalname,
+      url: formattedUrls[index],
+    }));
+    return await this.registrationService.registerUser(responseObject, registrationDto);
   }
 
 
@@ -89,12 +90,7 @@ export class RegistrationController {
     FileFieldsInterceptor([
       { name: 'nidPhoto', maxCount: 1 },
       { name: 'nomineeNidPhoto', maxCount: 1 },
-    ], {
-      storage: diskStorage({
-        filename: editFileName,
-        destination: getUploadPath,
-      }),
-    }),
+    ]),
   )
   @UseGuards(JwtAuthGuard)
   async updateProfile(
@@ -107,20 +103,29 @@ export class RegistrationController {
       nomineeNidPhoto: Express.Multer.File[];
     },
     @Req() req,
+    @Query('folderPath') folderPath: string
   ): Promise<IResponsePayload<null>> {
     let nidPhotoObject: IFileUploadResponse | null = null;
     let nomineeNidPhotoObject: IFileUploadResponse | null = null;
     if (files.nidPhoto) {
-      const nidPhoto = this.uploadService.makeFileResponseObject(files.nidPhoto, req);
-      nidPhotoObject = nidPhoto[0];
+      const url = await this.uploadService.uploadSingleFile(files.nidPhoto[0], folderPath);
+      nidPhotoObject = {
+        size: this.uploadService.bytesToKb(files.nidPhoto[0].size),
+        name: files.nidPhoto[0].originalname,
+        url: this.uploadService.makeFileResponseUrl(url, req) as string,
+      };
     }
     if (files.nomineeNidPhoto) {
-      const nomineeNidPhoto = this.uploadService.makeFileResponseObject(files.nomineeNidPhoto, req);
-      nomineeNidPhotoObject = nomineeNidPhoto[0];
+      const url = await this.uploadService.uploadSingleFile(files.nomineeNidPhoto[0], folderPath);
+      nomineeNidPhotoObject = {
+        size: this.uploadService.bytesToKb(files.nomineeNidPhoto[0].size),
+        name: files.nomineeNidPhoto[0].originalname,
+        url: this.uploadService.makeFileResponseUrl(url, req) as string,
+      };
     }
-   
+
     return await this.registrationService.updateProfile(
-      id, 
+      id,
       user,
       registrationDto,
       nidPhotoObject,

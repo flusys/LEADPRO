@@ -1,14 +1,12 @@
 import { ENTITY_ARRAY } from '@flusys/flusysnest/persistence/entities';
 import { DataSource } from 'typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { envConfig } from '@flusys/flusysnest/core/config';
+import { IAppConfig } from '@flusys/flusysnest/core/interfaces';
 
 export const appDataSource = new DataSource({
     type: 'mysql',
-    host: 'localhost',
-    port: 3306,
-    username: 'root',
-    password: '123456',
-    database: 'LEADPRO',
+    ...envConfig.getTypeOrmConfig(),
     entities: [
         ...ENTITY_ARRAY,
         __dirname + '/**/*.entity{.ts,.js}'
@@ -22,12 +20,12 @@ export const appDataSource = new DataSource({
     namingStrategy: new SnakeNamingStrategy(),
 });
 
-export const appconfig = () => ({
+export const appconfig = (): IAppConfig => ({
     userJwtSecret: 'project2025',
-    cookieDomainName: 'localhost',
+    cookieDomainName: envConfig.getCookieDomainName(),
     userTokenCookieName: 'refreshToken',
     userTokenExpiredTime: 24 * 60 * 60,
     userRefreshTokenExpiredTime: 168 * 60 * 60,
-    isLive: false,
-    companyPremised: false,
+    organizationPremised: false,
+    uploader: 'file',
 });

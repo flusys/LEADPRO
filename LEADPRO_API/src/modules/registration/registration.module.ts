@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Gallery, User } from '@flusys/flusysnest/persistence/entities';
 import { UserPersonalInfo } from './user-personal-info.entity';
 import { UploadModule } from '@flusys/flusysnest/modules/gallery/apis';
-import { UtilsModule } from '@flusys/flusysnest/shared/services';
+import { UtilsModule } from '@flusys/flusysnest/shared/modules';
 
 @Module({
   imports: [

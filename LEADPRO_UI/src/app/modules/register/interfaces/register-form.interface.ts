@@ -20,5 +20,5 @@ export interface IRegistrationForm {
     confirmPassword: FormControl<string>;
 
     // Hidden
-    companyReferCode: FormControl<string | null>;
+    organizationReferCode: FormControl<string | null>;
 }

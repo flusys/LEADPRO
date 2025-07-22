@@ -82,5 +82,5 @@ export class RegistrationDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  companyReferCode: string;
+  organizationReferCode: string;
 }

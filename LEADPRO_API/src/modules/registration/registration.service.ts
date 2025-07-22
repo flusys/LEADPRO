@@ -1,14 +1,13 @@
 import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, QueryFailedError, Repository } from 'typeorm';
-import { UtilsService } from '@flusys/flusysnest/shared/services';
 import * as bcrypt from 'bcrypt';
 import {
   IFileUploadResponse,
   ILoggedUserInfo,
   IResponsePayload
 } from '@flusys/flusysnest/shared/interfaces';
-import { Company, CompanyBranch, Gallery, User, UserCompany, UserCompanyBranch } from '@flusys/flusysnest/persistence/entities';
+import { Organization, OrganizationBranch, Gallery, User, UserOrganization, UserOrganizationBranch } from '@flusys/flusysnest/persistence/entities';
 import { IUser } from '@flusys/flusysnest/modules/settings/interfaces';
 import { RegistrationDto } from './registration.dto';
 import { UserPersonalInfo } from './user-personal-info.entity';
@@ -19,6 +18,7 @@ import { join } from 'path';
 import { IProfileInfo } from './profile-info-data.interface';
 import { ProfileInfoDto } from './registration-info.dto';
 import { UploadService } from '@flusys/flusysnest/modules/gallery/apis';
+import { UtilsService } from '@flusys/flusysnest/shared/modules';
 
 @Injectable()
 export class RegistrationService {
@@ -40,24 +40,12 @@ export class RegistrationService {
     const queryRunner = this.userRepository.manager.connection.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
-
     try {
       // Check if email exists
       const existingUser = await this.userRepository.findOne({ where: { email: userRegister.email } });
       if (existingUser) {
-        // Inside your email check block:
-        for (const file of photoObjectArray) {
-          try {
-            // Extract relative path after `/image/`
-            const relativePath = file.url.split('/image/')[1]; // e.g., "upload/others/rana1-b7b4.png"
-            // Resolve actual file path
-            const fullPath = join(process.cwd(), relativePath); // → "/your-app-root/upload/others/rana1-b7b4.png"
-            await fs.promises.unlink(fullPath);
-          } catch (e) {
-            console.warn(`Failed to delete file at ${file.url}`, e);
-          }
-        }
-
+        const urls = photoObjectArray.map((item) => item.url);
+        await this.uploadService.deleteMultipleFile(urls);
         return {
           success: false,
           message: 'Email already exists',
@@ -69,25 +57,25 @@ export class RegistrationService {
       }
 
 
-      let company: Company | null = null;
-      let companyBranch: CompanyBranch | null = null;
-      if (!userRegister.companyReferCode) {
+      let organization: Organization | null = null;
+      let organizationBranch: OrganizationBranch | null = null;
+      if (!userRegister.organizationReferCode) {
         return {
           success: false,
-          message: 'Please Provide Refer Company',
+          message: 'Please Provide Refer Organization',
         };
       }
-      company = await queryRunner.manager.findOne(Company, { where: { slug: userRegister.companyReferCode } });
-      if (!company) {
+      organization = await queryRunner.manager.findOne(Organization, { where: { slug: userRegister.organizationReferCode } });
+      if (!organization) {
         await queryRunner.rollbackTransaction();
         return {
           success: false,
           message: 'Please Provide Valid Refer Id',
         };
       }
-      const allCompanyBranches = await queryRunner.manager.find(CompanyBranch, { where: { company: { id: company.id } } });
-      if (allCompanyBranches.length === 1) {
-        companyBranch = allCompanyBranches[0];
+      const allOrganizationBranches = await queryRunner.manager.find(OrganizationBranch, { where: { organization: { id: organization.id } } });
+      if (allOrganizationBranches.length === 1) {
+        organizationBranch = allOrganizationBranches[0];
       }
 
       // Mark photos as private
@@ -134,24 +122,24 @@ export class RegistrationService {
       });
 
 
-      // Save UserCompany
-      const userCompany = queryRunner.manager.create(UserCompany, {
+      // Save UserOrganization
+      const userOrganization = queryRunner.manager.create(UserOrganization, {
         user: savedUser,
-        company,
+        organization,
         isActive: false,
         readOnly: false,
       });
-      await queryRunner.manager.save(userCompany);
-      // Save UserCompanyBranch
-      if (companyBranch) {
-        const userCompanyBranch = queryRunner.manager.create(UserCompanyBranch, {
+      await queryRunner.manager.save(userOrganization);
+      // Save UserOrganizationBranch
+      if (organizationBranch) {
+        const userOrganizationBranch = queryRunner.manager.create(UserOrganizationBranch, {
           user: savedUser,
-          company,
-          companyBranch,
+          organization,
+          organizationBranch,
           isActive: true,
           readOnly: false,
         });
-        await queryRunner.manager.save(userCompanyBranch);
+        await queryRunner.manager.save(userOrganizationBranch);
       }
 
       await queryRunner.manager.save(userPersonalInfo);

@@ -6,8 +6,8 @@ export const environment = {
   
     appLoginUrl: 'auth/login',
   
-    localStorageSelectedCompanyIdKey: 'companyId',
-    localStorageSelectedCompanyBranchIdKey: 'companyBranchId',
+    localStorageSelectedOrganizationIdKey: 'organizationId',
+    localStorageSelectedOrganizationBranchIdKey: 'organizationBranchId',
     
-    checkCompanyOnGuard:true,
+    checkOrganizationOnGuard:true,
   };

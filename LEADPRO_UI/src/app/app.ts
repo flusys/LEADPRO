@@ -17,7 +17,7 @@ export class App {
   authStateService: AuthenticationStateService = inject(AuthenticationStateService);
 
   constructor() {
-    this.authStateService.currentCompanyInfo.update((prev) => {
+    this.authStateService.currentOrganizationInfo.update((prev) => {
       return {
         ...prev,
         ...{ appName: "LEADPRO", name: 'Leadpro' }
