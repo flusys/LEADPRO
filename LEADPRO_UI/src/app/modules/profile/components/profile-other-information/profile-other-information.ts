@@ -3,10 +3,10 @@ import { NgForm, FormControlName } from '@angular/forms';
 import { AngularModule, PrimeModule } from '@flusys/flusysng/shared/modules';
 import { MessageService } from 'primeng/api';
 import { Subscription, take } from 'rxjs';
-import { RegisterApi } from '../../../register/services/register-api';
 import { ProfileInfoForm } from '../../services/profile-info-form';
 import { Router } from '@angular/router';
 import { ProfileInfoApi } from '../../services/profile-info-api';
+import { AuthenticationStateService } from '@flusys/flusysng/auth/services';
 
 @Component({
   selector: 'app-profile-other-information',
@@ -20,6 +20,7 @@ import { ProfileInfoApi } from '../../services/profile-info-api';
 export class ProfileOtherInformation implements OnInit {
   id = input.required<number>();
   profileInfoApi = inject(ProfileInfoApi);
+  authStateService = inject(AuthenticationStateService);
   router = inject(Router)
   readonly inputForm = viewChild.required<NgForm>('inputForm');
   readonly formControls = viewChildren(FormControlName, { read: ElementRef });
@@ -36,10 +37,25 @@ export class ProfileOtherInformation implements OnInit {
 
   onFileChange(event: Event, field: 'personalPhoto' | 'nidPhoto' | 'nomineeNidPhoto') {
     const input = event.target as HTMLInputElement;
-    if (input?.files?.length) {
-      this.profileInfoFormService.formGroup.get(field)?.setValue(input.files[0]);
+    const file = input?.files?.[0];
+
+    if (file) {
+      this.profileInfoFormService.formGroup.get(field)?.setValue(file);
+      const urlField = field === 'nidPhoto' ? 'nidPhotoUrl' : 'nomineeNidPhotoUrl';
+      if (file.type.startsWith('image')) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          this.profileInfoFormService.formGroup.get(urlField)?.setValue(reader.result as string);
+          this.cd.markForCheck(); // Trigger change detection manually
+        };
+        reader.readAsDataURL(file);
+      } else {
+        this.profileInfoFormService.formGroup.get(urlField)?.setValue('');
+        this.cd.markForCheck(); // Still needed if value changed
+      }
     }
   }
+
 
 
 
@@ -47,10 +63,23 @@ export class ProfileOtherInformation implements OnInit {
     this.profileInfoApi.getById(this.id()).pipe(take(1)).subscribe({
       next: (res) => {
         const user = res.result;
-        this.profileInfoFormService.patchValue({
-          ...user
-        });
-        this.cd.detectChanges();
+        if (user) {
+          this.profileInfoFormService.patchValue({
+            ...user,
+            ...{
+              nidPhoto: null,
+              nomineeNidPhoto: null,
+              nidPhotoUrl: user.nidPhoto?.url,
+              nomineeNidPhotoUrl: user.nomineeNidPhoto?.url,
+            }
+          });
+        } else {
+          const user = this.authStateService.loginUserData();
+          this.profileInfoFormService.patchValue({
+            name: user?.name
+          });
+        }
+        this.cd.markForCheck();
       },
       error: (err) => {
       }
@@ -67,36 +96,34 @@ export class ProfileOtherInformation implements OnInit {
       Object.entries(data).forEach(([key, value]) => {
         formData.append(key, value as string);
       });
-      // this.registerApi.registration(formData, data.fullName?.replaceAll(' ', '_')).subscribe({
-      //   next: (res) => {
-      //     if (res.success) {
-      //       this.clear();
-      //       this.messageService.add({
-      //         key: 'tst',
-      //         severity: 'success',
-      //         summary: 'Registration Successful',
-      //         detail: res.message,
-      //       });
-      //       this.router.navigate(['/auth/login']);
-      //     } else {
-      //       this.messageService.add({
-      //         key: 'tst',
-      //         severity: 'warn',
-      //         summary: 'Registration Failed',
-      //         detail: res.message || 'Something went wrong',
-      //       });
-      //     }
-      //   },
-      //   error: (err) => {
-      //     console.error(err);
-      //     this.messageService.add({
-      //       key: 'tst',
-      //       severity: 'error',
-      //       summary: 'Server Error',
-      //       detail: err.error?.message || 'Unexpected error occurred',
-      //     });
-      //   },
-      // });
+      this.profileInfoApi.updateProfile(formData, this.id(), data.name?.replaceAll(' ', '_')).subscribe({
+        next: (res) => {
+          if (res.success) {
+            this.messageService.add({
+              key: 'tst',
+              severity: 'success',
+              summary: 'Successful',
+              detail: res.message,
+            });
+          } else {
+            this.messageService.add({
+              key: 'tst',
+              severity: 'warn',
+              summary: 'Failed',
+              detail: res.message || 'Something went wrong',
+            });
+          }
+        },
+        error: (err) => {
+          console.error(err);
+          this.messageService.add({
+            key: 'tst',
+            severity: 'error',
+            summary: 'Server Error',
+            detail: err.error?.message || 'Unexpected error occurred',
+          });
+        },
+      });
     } else {
       if (this.profileInfoFormService.formGroup.invalid) {
         this.profileInfoFormService.focusFirstInvalidInput(this.formControls() as ElementRef<any>[]);
@@ -105,18 +132,10 @@ export class ProfileOtherInformation implements OnInit {
     }
   }
 
-  clear() {
-    this.profileInfoFormService.formGroup.reset();
-  }
-
   getError(controlName: string): string | null {
     const control = this.profileInfoFormService.formGroup.get(controlName);
     if (control && control.invalid && (control.dirty || control.touched)) {
       if (control.errors?.['required']) return 'This field is required';
-      if (control.errors?.['email']) return 'Invalid email format';
-      if (control.errors?.['minlength']) {
-        return `Minimum ${control.errors['minlength'].requiredLength} characters required`;
-      }
     }
     return null;
   }

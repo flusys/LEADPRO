@@ -1,7 +1,7 @@
 import { FormControl } from '@angular/forms';
 
 export interface IProfileInfoForm {
-    nidPhoto: FormControl<File | number | null>;
+    name: FormControl<string>;
     fatherName: FormControl<string>;
     motherName: FormControl<string>;
     maritalStatus: FormControl<'Single' | 'Married' | 'Divorced' | string>;
@@ -10,6 +10,9 @@ export interface IProfileInfoForm {
     profession: FormControl<string>;
     nomineeName: FormControl<string>;
     relationWithNominee: FormControl<string>;
+    nidPhoto: FormControl<File | number | null>;
     nomineeNidPhoto: FormControl<File | number | null>;
+    nidPhotoUrl: FormControl<string>;
+    nomineeNidPhotoUrl: FormControl<string>;
     comments: FormControl<string | null>;
 }

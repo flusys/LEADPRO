@@ -1,9 +1,10 @@
 import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { QueryFailedError, Repository } from 'typeorm';
+import { DataSource, QueryFailedError, Repository } from 'typeorm';
 import { UtilsService } from '@flusys/flusysnest/shared/services';
 import * as bcrypt from 'bcrypt';
 import {
+  IFileUploadResponse,
   ILoggedUserInfo,
   IResponsePayload
 } from '@flusys/flusysnest/shared/interfaces';
@@ -16,6 +17,8 @@ import { FileTypes } from '@flusys/flusysnest/shared/enums';
 import * as fs from 'fs';
 import { join } from 'path';
 import { IProfileInfo } from './profile-info-data.interface';
+import { ProfileInfoDto } from './registration-info.dto';
+import { UploadService } from '@flusys/flusysnest/modules/gallery/apis';
 
 @Injectable()
 export class RegistrationService {
@@ -27,6 +30,8 @@ export class RegistrationService {
     @InjectRepository(UserPersonalInfo)
     private readonly userPersonalInfoRepository: Repository<UserPersonalInfo>,
     private utilsService: UtilsService,
+    private uploadService: UploadService,
+    private dataSource: DataSource
   ) {
   }
 
@@ -183,11 +188,35 @@ export class RegistrationService {
         where: { user: { id: userId } },
         relations: ['user', 'nidPhoto', 'nomineeNidPhoto', 'referUser'],
       });
-      
+      const object = userInformation ? {
+        nidPhoto: userInformation.nidPhoto ? {
+          id: userInformation.nidPhoto?.id,
+          name: userInformation.nidPhoto?.name,
+          url: userInformation.nidPhoto?.url,
+          type: userInformation.nidPhoto?.type,
+        } : null,
+        name: userInformation.user.name,
+        fatherName: userInformation.fatherName,
+        motherName: userInformation.motherName,
+        maritalStatus: userInformation.maritalStatus,
+        presentAddress: userInformation.presentAddress,
+        permanentAddress: userInformation.permanentAddress,
+        profession: userInformation.profession,
+        idNo: '', // You can extract this from somewhere else if available
+        nomineeName: userInformation.nomineeName,
+        relationWithNominee: userInformation.relationWithNominee,
+        nomineeNidPhoto: userInformation.nomineeNidPhoto ? {
+          id: userInformation.nomineeNidPhoto?.id,
+          name: userInformation.nomineeNidPhoto?.name,
+          url: userInformation.nomineeNidPhoto?.url,
+          type: userInformation.nomineeNidPhoto?.type,
+        } : null,
+        comments: userInformation.comments,
+      } : null;
       return {
         success: true,
         message: 'User Found',
-        result: userInformation,
+        result: object,
       } as unknown as IResponsePayload<IProfileInfo>;
     } catch (error: any) {
       console.log(error);
@@ -199,6 +228,139 @@ export class RegistrationService {
       } else {
         throw new InternalServerErrorException(error.message);
       }
+    }
+  }
+
+  async updateProfile(
+    userId: number,
+    user: ILoggedUserInfo,
+    dto: ProfileInfoDto,
+    nidPhotoObject: IFileUploadResponse | null,
+    nomineeNidPhotoObject: IFileUploadResponse | null,
+  ): Promise<IResponsePayload<null>> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    // To track deletions for manual cleanup if commit succeeds
+    const deletedGalleryIds: number[] = [];
+    try {
+      if (!userId) {
+        userId = user.id;
+      }
+
+      let userInformation = await this.userPersonalInfoRepository.findOne({
+        where: { user: { id: userId } },
+        relations: ['user', 'nidPhoto', 'nomineeNidPhoto', 'referUser'],
+      });
+
+      if (!userInformation) {
+        userInformation = queryRunner.manager.create(this.userPersonalInfoRepository.target, {
+          user: { id: userId } as any,
+          ...dto,
+        });
+        if (nidPhotoObject) {
+          const gallery = queryRunner.manager.create(this.galleryRepository.target, {
+            ...nidPhotoObject,
+            isPrivate: true,
+            type: FileTypes.IMAGE,
+          } as unknown as Gallery);
+          const savedGallery = await queryRunner.manager.save(this.galleryRepository.target, gallery);
+          userInformation.nidPhoto = savedGallery;
+        }
+        if (nomineeNidPhotoObject) {
+          const gallery = queryRunner.manager.create(this.galleryRepository.target, {
+            ...nomineeNidPhotoObject,
+            isPrivate: true,
+            type: FileTypes.IMAGE,
+          } as unknown as Gallery);
+
+          const savedGallery = await queryRunner.manager.save(this.galleryRepository.target, gallery);
+          userInformation.nomineeNidPhoto = savedGallery;
+        }
+
+        await queryRunner.manager.save(userInformation);
+
+        await queryRunner.commitTransaction();
+        return {
+          success: true,
+          message: 'Profile created successfully',
+        };
+      }
+
+      // Update existing fields
+      Object.assign(userInformation, {
+        fatherName: dto.fatherName ?? userInformation.fatherName,
+        motherName: dto.motherName ?? userInformation.motherName,
+        maritalStatus: dto.maritalStatus ?? userInformation.maritalStatus,
+        presentAddress: dto.presentAddress ?? userInformation.presentAddress,
+        permanentAddress: dto.permanentAddress ?? userInformation.permanentAddress,
+        profession: dto.profession ?? userInformation.profession,
+        nomineeName: dto.nomineeName ?? userInformation.nomineeName,
+        relationWithNominee: dto.relationWithNominee ?? userInformation.relationWithNominee,
+        comments: dto.comments ?? userInformation.comments,
+      });
+
+      // Replace nidPhoto if new file is uploaded
+      if (nidPhotoObject) {
+        if (userInformation.nidPhoto) {
+          deletedGalleryIds.push(userInformation.nidPhoto.id); // Save to delete later
+        }
+        const gallery = queryRunner.manager.create(this.galleryRepository.target, {
+          ...nidPhotoObject,
+          isPrivate: true,
+          type: FileTypes.IMAGE,
+        } as unknown as Gallery);
+        const savedGallery = await queryRunner.manager.save(this.galleryRepository.target, gallery);
+        userInformation.nidPhoto = savedGallery;
+      }
+
+      // Replace nomineeNidPhoto if new file is uploaded
+      if (nomineeNidPhotoObject) {
+        if (userInformation.nomineeNidPhoto) {
+          deletedGalleryIds.push(userInformation.nomineeNidPhoto.id);
+        }
+        const gallery = queryRunner.manager.create(this.galleryRepository.target, {
+          ...nomineeNidPhotoObject,
+          isPrivate: true,
+          type: FileTypes.IMAGE,
+        } as unknown as Gallery);
+        const savedGallery = await queryRunner.manager.save(this.galleryRepository.target, gallery);
+        userInformation.nomineeNidPhoto = savedGallery;
+      }
+
+      console.warn(userInformation)
+
+      await queryRunner.manager.save(userInformation);
+
+      await queryRunner.commitTransaction();
+      // Now delete old galleries and files AFTER successful commit
+      for (const id of deletedGalleryIds) {
+        await this.deleteGalleryAndFile(id);
+      }
+      return {
+        success: true,
+        message: 'User Information Updated',
+      } as unknown as IResponsePayload<null>;
+    } catch (error) {
+      console.error('Failed to create/update user personal info:', error);
+      return {
+        success: false,
+        message: 'Something went wrong while saving user information.',
+      };
+    }
+  }
+
+  async deleteGalleryAndFile(id: number): Promise<void> {
+    try {
+      const gallery = await this.galleryRepository.findOneBy({ id });
+      if (!gallery) return;
+
+      await this.galleryRepository.delete(id);
+      const filePath = gallery.url.split('/image/')[1];
+      await this.uploadService.deleteSingleFile(filePath);
+    } catch (error) {
+      console.error(`Failed to delete gallery and file for ID ${id}:`, error);
     }
   }
 

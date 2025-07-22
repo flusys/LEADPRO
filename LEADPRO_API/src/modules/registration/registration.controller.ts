@@ -5,6 +5,7 @@ import {
   Logger,
   Param,
   Post,
+  Put,
   Req,
   UploadedFiles,
   UseGuards,
@@ -14,7 +15,7 @@ import {
   Version,
   VERSION_NEUTRAL,
 } from '@nestjs/common';
-import { IResponsePayload, ILoggedUserInfo } from '@flusys/flusysnest/shared/interfaces';
+import { IResponsePayload, ILoggedUserInfo, IFileUploadResponse } from '@flusys/flusysnest/shared/interfaces';
 import { RegistrationService } from './registration.service';
 import { IUser } from '@flusys/flusysnest/modules/settings/interfaces';
 import { RegistrationDto } from './registration.dto';
@@ -24,8 +25,9 @@ import { editFileName, getUploadPath, UploadService } from '@flusys/flusysnest/m
 import { JwtAuthGuard } from "@flusys/flusysnest/shared/guards";
 import { IProfileInfo } from './profile-info-data.interface';
 import { User } from "@flusys/flusysnest/shared/decorators";
+import { ProfileInfoDto } from './registration-info.dto';
 
-@Controller('auth')
+@Controller('')
 export class RegistrationController {
   private logger = new Logger(RegistrationController.name);
 
@@ -35,7 +37,7 @@ export class RegistrationController {
   }
 
   @Version(VERSION_NEUTRAL)
-  @Post('registration')
+  @Post('auth/registration')
   @UsePipes(ValidationPipe)
   @UseInterceptors(
     FileFieldsInterceptor([
@@ -75,10 +77,55 @@ export class RegistrationController {
     @Param("id") id: number,
     @User() user: ILoggedUserInfo,
   ): Promise<IResponsePayload<IProfileInfo>> {
-    return await this.registrationService.findById(id,user);
+    return await this.registrationService.findById(id, user);
   }
 
 
 
+  @Version(VERSION_NEUTRAL)
+  @Put("profile/:id")
+  @UsePipes(ValidationPipe)
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'nidPhoto', maxCount: 1 },
+      { name: 'nomineeNidPhoto', maxCount: 1 },
+    ], {
+      storage: diskStorage({
+        filename: editFileName,
+        destination: getUploadPath,
+      }),
+    }),
+  )
+  @UseGuards(JwtAuthGuard)
+  async updateProfile(
+    @Param("id") id: number,
+    @User() user: ILoggedUserInfo,
+    @Body() registrationDto: ProfileInfoDto,
+    @UploadedFiles()
+    files: {
+      nidPhoto: Express.Multer.File[];
+      nomineeNidPhoto: Express.Multer.File[];
+    },
+    @Req() req,
+  ): Promise<IResponsePayload<null>> {
+    let nidPhotoObject: IFileUploadResponse | null = null;
+    let nomineeNidPhotoObject: IFileUploadResponse | null = null;
+    if (files.nidPhoto) {
+      const nidPhoto = this.uploadService.makeFileResponseObject(files.nidPhoto, req);
+      nidPhotoObject = nidPhoto[0];
+    }
+    if (files.nomineeNidPhoto) {
+      const nomineeNidPhoto = this.uploadService.makeFileResponseObject(files.nomineeNidPhoto, req);
+      nomineeNidPhotoObject = nomineeNidPhoto[0];
+    }
+   
+    return await this.registrationService.updateProfile(
+      id, 
+      user,
+      registrationDto,
+      nidPhotoObject,
+      nomineeNidPhotoObject
+    );
+  }
 
 }

@@ -8,12 +8,7 @@ import {
   MinLength,
 } from 'class-validator';
 
-export class RegistrationDto {
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  fullName: string;
-
+export class ProfileInfoDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
@@ -31,11 +26,6 @@ export class RegistrationDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsEmail()
-  email: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
   @IsString()
   presentAddress: string;
 
@@ -43,11 +33,6 @@ export class RegistrationDto {
   @IsNotEmpty()
   @IsString()
   permanentAddress: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  phoneNumber: string;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -69,18 +54,4 @@ export class RegistrationDto {
   @IsString()
   comments?: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
-  @MinLength(6)
-  password: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @MinLength(6)
-  confirmPassword: string;
-
-
-  @ApiProperty()
-  @IsNotEmpty()
-  companyReferCode: string;
 }

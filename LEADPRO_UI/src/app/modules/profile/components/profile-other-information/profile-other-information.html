@@ -1,5 +1,5 @@
 <div class="card">
-     <p class="p-panel-title mb-8">🪪 Other Information</p>
+    <p class="p-panel-title mb-8">🪪 Other Information</p>
     <form [formGroup]="profileInfoFormService.formGroup" class="mt-4" (ngSubmit)="submit()">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
             <!-- Father Name -->
@@ -87,26 +87,46 @@
 
             <!-- NID Upload -->
             <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
-                <label>NID File/Photo with Signature <span class="text-red-500">*</span></label>
-                <input type="file" accept="image/*,application/pdf" (change)="onFileChange($event, 'nidPhoto')" />
+                <div class="flex flex-row justify-between">
+                    <div>
+                        <label>NID File/Photo with Signature <span class="text-red-500">*</span></label>
+                        <input type="file" accept="image/*,application/pdf"
+                            (change)="onFileChange($event, 'nidPhoto')" />
+                    </div>
+                    @if(profileInfoFormService.value.nidPhotoUrl){
+                    <img [src]="profileInfoFormService.value.nidPhotoUrl" alt="image"
+                        class="w-[100px] h-[80px] rounded-[10px] border" />
+                    }
+                </div>
+                <!-- Preview for NID Photo -->
                 @if (getError('nidPhoto')) {
                 <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('nidPhoto') }}</small>
                 }
             </div>
 
-            <!-- Nominee NID Upload -->
             <div class="flex flex-col gap-2 w-full">
-                <label>Nominee NID File/Photo <span class="text-red-500">*</span></label>
-                <input type="file" accept="image/*,application/pdf"
-                    (change)="onFileChange($event, 'nomineeNidPhoto')" />
+                <div class="flex flex-row justify-between">
+                    <div>
+                        <label>Nominee NID File/Photo <span class="text-red-500">*</span></label>
+                        <input type="file" accept="image/*,application/pdf"
+                            (change)="onFileChange($event, 'nomineeNidPhoto')" />
+                    </div>
+                    @if(profileInfoFormService.value.nomineeNidPhotoUrl){
+                    <img [src]="profileInfoFormService.value.nomineeNidPhotoUrl" alt="image"
+                        class="w-[100px] h-[80px] rounded-[10px] border" />
+                    }
+                </div>
+                <!-- Preview for NID Photo -->
+                @if (getError('nidPhoto')) {
+                <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('nidPhoto') }}</small>
+                }
             </div>
         </div>
 
         <!-- Action Buttons -->
         <div class="flex gap-2 justify-end mt-5">
-            <button pButton type="submit" label="Submit" icon="pi pi-check"
+            <button pButton type="submit" label="Update" icon="pi pi-check"
                 [disabled]="profileInfoFormService.formGroup.invalid"></button>
-            <button pButton type="button" label="Clear" icon="pi pi-trash" (click)="clear()"></button>
         </div>
     </form>
 </div>

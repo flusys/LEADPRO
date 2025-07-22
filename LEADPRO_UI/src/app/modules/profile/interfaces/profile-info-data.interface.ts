@@ -1,5 +1,9 @@
+import { IGallery } from "@flusys/flusysng/modules/gallery/gallery/interfaces";
+
+
 export interface ProfileInfoData {
-    nidPhoto: File;
+    nidPhoto: IGallery;
+    name: string;
     fatherName: string;
     motherName: string;
     maritalStatus: 'Single' | 'Married' | 'Divorced' | string;
@@ -9,6 +13,6 @@ export interface ProfileInfoData {
     idNo: string;
     nomineeName: string;
     relationWithNominee: string;
-    nomineeNidPhoto: File;
+    nomineeNidPhoto: IGallery;
     comments?: string;
 }

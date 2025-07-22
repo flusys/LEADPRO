@@ -18,9 +18,8 @@ export class ProfileInfoForm extends FormCommonClass<IProfileInfoForm> {
 
   initForm() {
     this.formGroup = new FormGroup<IProfileInfoForm>({
-      nidPhoto: new FormControl<File | null>(null, {
+      name: new FormControl('', {
         nonNullable: true,
-        validators: Validators.required,
       }),
       fatherName: new FormControl('', {
         nonNullable: true,
@@ -56,7 +55,15 @@ export class ProfileInfoForm extends FormCommonClass<IProfileInfoForm> {
       }),
       nomineeNidPhoto: new FormControl<File | null>(null, {
         nonNullable: true,
-        validators: Validators.required,
+      }),
+      nidPhoto: new FormControl<File | null>(null, {
+        nonNullable: true,
+      }),
+      nomineeNidPhotoUrl: new FormControl<string>('', {
+        nonNullable: true,
+      }),
+      nidPhotoUrl: new FormControl<string>('', {
+        nonNullable: true,
       }),
       comments: new FormControl<string | null>(null),
     });
