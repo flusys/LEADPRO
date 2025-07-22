@@ -9,14 +9,14 @@ import {
 } from '@flusys/flusysnest/shared/interfaces';
 import { Organization, OrganizationBranch, Gallery, User, UserOrganization, UserOrganizationBranch } from '@flusys/flusysnest/persistence/entities';
 import { IUser } from '@flusys/flusysnest/modules/settings/interfaces';
-import { RegistrationDto } from './registration.dto';
+import { RegistrationDto } from './dtos/registration.dto';
 import { UserPersonalInfo } from './user-personal-info.entity';
 import { IGallery } from '@flusys/flusysnest/modules/gallery/interfaces';
 import { FileTypes } from '@flusys/flusysnest/shared/enums';
 import * as fs from 'fs';
 import { join } from 'path';
-import { IProfileInfo } from './profile-info-data.interface';
-import { ProfileInfoDto } from './registration-info.dto';
+import { IProfileInfo } from './interfaces/profile-info-data.interface';
+import { ProfileInfoDto } from './dtos/registration-info.dto';
 import { UploadService } from '@flusys/flusysnest/modules/gallery/apis';
 import { UtilsService } from '@flusys/flusysnest/shared/modules';
 

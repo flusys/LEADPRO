@@ -11,6 +11,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { SettingsModule, OrganizationModule, AuthModule, GalleryModule } from '@flusys/flusysnest/pages';
 import { appconfig, appDataSource } from './app.config';
 import { RegistrationModule } from './modules/registration/registration.module';
+import { CashModule } from './modules/cash/cash.module';
+import { ExpenseModule } from './modules/expense/expense.module';
 
 @Module({
   imports: [
@@ -31,7 +33,10 @@ import { RegistrationModule } from './modules/registration/registration.module';
     AuthModule,
     SettingsModule,
     OrganizationModule,
-    GalleryModule
+    GalleryModule,
+
+    CashModule,
+    ExpenseModule
   ],
   controllers: [AppController],
   providers: [AppService, JwtService,

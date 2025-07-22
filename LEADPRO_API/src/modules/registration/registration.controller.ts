@@ -19,14 +19,14 @@ import {
 import { IResponsePayload, ILoggedUserInfo, IFileUploadResponse } from '@flusys/flusysnest/shared/interfaces';
 import { RegistrationService } from './registration.service';
 import { IUser } from '@flusys/flusysnest/modules/settings/interfaces';
-import { RegistrationDto } from './registration.dto';
+import { RegistrationDto } from './dtos/registration.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { editFileName, getUploadPath, UploadService } from '@flusys/flusysnest/modules/gallery/apis';
 import { JwtAuthGuard } from "@flusys/flusysnest/core/guards";
-import { IProfileInfo } from './profile-info-data.interface';
+import { IProfileInfo } from './interfaces/profile-info-data.interface';
 import { User } from "@flusys/flusysnest/shared/decorators";
-import { ProfileInfoDto } from './registration-info.dto';
+import { ProfileInfoDto } from './dtos/registration-info.dto';
 
 @Controller('')
 export class RegistrationController {

@@ -34,10 +34,10 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .addBearerAuth()
-    .setTitle('Billings example')
-    .setDescription('The Billings API description')
+    .setTitle('LeadPro example')
+    .setDescription('The LeadPro API description')
     .setVersion('1.0')
-    .addTag('Billings')
+    .addTag('LeadPro')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
