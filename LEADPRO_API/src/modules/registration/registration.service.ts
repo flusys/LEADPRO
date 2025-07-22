@@ -317,8 +317,6 @@ export class RegistrationService {
         userInformation.nomineeNidPhoto = savedGallery;
       }
 
-      console.warn(userInformation)
-
       await queryRunner.manager.save(userInformation);
 
       await queryRunner.commitTransaction();
