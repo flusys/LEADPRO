@@ -6,6 +6,14 @@ const baseRoutes: Routes = [
     path: 'profile',
     loadComponent: () => import('./pages/profile/profile')
       .then(com => com.Profile),
+  },{
+    path: 'cash',
+    loadComponent: () => import('./pages/cash/cash')
+      .then(com => com.Cash),
+  },{
+    path: 'expense',
+    loadComponent: () => import('./pages/expense/expense')
+      .then(com => com.Expense),
   },
 ]
 const authRoutes: Routes = [

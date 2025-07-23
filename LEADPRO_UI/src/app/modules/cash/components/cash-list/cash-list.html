@@ -1,0 +1,114 @@
+<p-panel header="💸 All Cash Transactions" [toggleable]="true" class="line-height-3 m-0">
+  <p-table #dt [value]="cashStateService.select('data')().result" [(selection)]="selectedCash" dataKey="id"
+    [loading]="cashStateService.select('loading')()" [globalFilterFields]="globalFilterField" [paginator]="true"
+    [rows]="10" [filterDelay]="0" [rowsPerPageOptions]="[5, 10, 50, 100]"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+
+    <!-- Toolbar -->
+    <ng-template pTemplate="caption">
+      <div class="table-header flex flex-wrap justify-left gap-3">
+        <p-button icon="pi pi-refresh" (click)="cashStateService.resetFilter()" styleClass="h-full"></p-button>
+        <p-iconfield>
+          <p-inputicon styleClass="pi pi-search" />
+          <input pInputText type="text" (input)="dt.filterGlobal(getInputString($event), 'contains')"
+            placeholder="Global Search" />
+        </p-iconfield>
+
+        @if (selectedCash.length && !cashStateService.withDeleted) {
+        <p-button icon="pi pi-trash" (click)="deleteOrRestore('delete')" styleClass="p-button-danger h-full"></p-button>
+        } @if (selectedCash.length && cashStateService.withDeleted) {
+        <p-button icon="pi pi-replay" (click)="deleteOrRestore('restore')" styleClass="h-full"></p-button>
+        }
+        <p-button icon="pi pi-eye-slash" (click)="withDeletedItem()" styleClass="p-button-{{
+            cashStateService.withDeleted ? 'primary' : 'secondary'
+          }} h-full"></p-button>
+      </div>
+    </ng-template>
+
+    <!-- Table Header -->
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 4rem">
+          <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+        </th>
+        <th pSortableColumn="cashBy.name">
+          <div class="flex justify-between items-center">
+            Cash By
+            <p-sortIcon field="cashBy.name"></p-sortIcon>
+            <p-columnFilter type="text" field="cashBy.name" display="menu" class="ml-auto"></p-columnFilter>
+          </div>
+        </th>
+        <th pSortableColumn="date">
+          <div class="flex justify-between items-center">
+            Date
+            <p-sortIcon field="date"></p-sortIcon>
+            <p-columnFilter type="date" field="date" display="menu" class="ml-auto"></p-columnFilter>
+          </div>
+        </th>
+        <th pSortableColumn="amount">
+          <div class="flex justify-between items-center">
+            Amount
+            <p-sortIcon field="amount"></p-sortIcon>
+            <p-columnFilter type="numeric" field="amount" display="menu" class="ml-auto"></p-columnFilter>
+          </div>
+        </th>
+        <th pSortableColumn="type">
+          <div class="flex justify-between items-center">
+            Type
+            <p-sortIcon field="type"></p-sortIcon>
+            <p-columnFilter type="text" field="type" display="menu" class="ml-auto"></p-columnFilter>
+          </div>
+        </th>
+        <th pSortableColumn="note">
+          <div class="flex justify-between items-center">
+            Note
+            <p-sortIcon field="note"></p-sortIcon>
+            <p-columnFilter type="text" field="note" display="menu" class="ml-auto"></p-columnFilter>
+          </div>
+        </th>
+        <th pSortableColumn="createdAt">
+          <div class="flex justify-between items-center">
+            Created At
+            <p-sortIcon field="createdAt"></p-sortIcon>
+            <p-columnFilter type="date" field="createdAt" display="menu" class="ml-auto"></p-columnFilter>
+          </div>
+        </th>
+        <th>Action</th>
+      </tr>
+    </ng-template>
+
+    <!-- Table Body -->
+    <ng-template pTemplate="body" let-cash>
+      <tr class="p-selectable-row">
+        <td>
+          <p-tableCheckbox [value]="cash"></p-tableCheckbox>
+        </td>
+        <td>
+          <span [ngClass]="{ 'text-red-600': cash.deletedAt }">
+            {{ cash.cashBy?.name || 'N/A' }}
+          </span>
+        </td>
+        <td>{{ cash.date | date: 'shortDate' }}</td>
+        <td>{{ cash.amount | currency: 'BDT' }}</td>
+        <td>{{ cash.type |cashTransactionLabel }}</td>
+        <td>
+          <span *ngIf="cash.note; else noNote">{{ cash.note }}</span>
+          <ng-template #noNote><span class="text-gray-400">--</span></ng-template>
+        </td>
+        <td>{{ cash.createdAt | date: 'short' }}</td>
+        <td>
+          <div class="flex gap-1 cursor-pointer">
+            <i class="pi pi-pencil cp" style="font-size: 1rem" (click)="editCash(cash)"></i>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+    <!-- Empty Message -->
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="8" class="text-center">No cash transactions found.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-panel>

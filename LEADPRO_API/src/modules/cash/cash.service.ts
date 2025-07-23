@@ -9,6 +9,7 @@ import { CashDto } from './cash.dto';
 import { Cash } from './cash.entity';
 import { ICash } from './cash.interface';
 import { Cache } from "cache-manager";
+import { User } from '@flusys/flusysnest/persistence/entities';
 
 @Injectable()
 export class CashService extends ApiService<CashDto, ICash, Cash, Repository<Cash>> {
@@ -27,7 +28,7 @@ export class CashService extends ApiService<CashDto, ICash, Cash, Repository<Cas
     );
   }
 
-  override async convertSingleDtoToEntity<T extends { id?: number }>(dto: T): Promise<Cash> {
+  override async convertSingleDtoToEntity(dto: CashDto): Promise<Cash> {
     let cash = new Cash();
     if (dto.id && dto.id > 0) {
       const dbData = await this.repository.findOne({
@@ -44,8 +45,9 @@ export class CashService extends ApiService<CashDto, ICash, Cash, Repository<Cas
       ...cash,
       ...dto,
       ...{
-        organization: (dto["createdBy"] ?? dto["updatedBy"]).organizationId,
-      },
+        date: new Date(),
+        cashBy: { id: dto.cashById } as User,
+      }
     };
     return cash;
   }
@@ -56,17 +58,12 @@ export class CashService extends ApiService<CashDto, ICash, Cash, Repository<Cas
     }
     const selectFields = select.map(field => `${this.entityName}.${field}`);
 
-    selectFields.push("organization.name");
-    selectFields.push("organization.id");
-    query.leftJoinAndSelect("cash.organization", "organization");
+    selectFields.push("cashBy.name");
+    selectFields.push("cashBy.id");
+    query.leftJoinAndSelect("cash.cashBy", "cashBy");
     query.select(selectFields);
     const cacheKey = selectFields.join(',');
     return { query, cacheKey, isRaw: false };
-  }
-
-  protected getExtraManipulateQuery(query: SelectQueryBuilder<Cash>, dto: FilterAndPaginationDto): { query: SelectQueryBuilder<Cash>, isRaw: boolean } {
-    query.andWhere(`organization.id = :organizationId`, { organizationId: dto['user'].organizationId });
-    return { query, isRaw: false };
   }
 
 }

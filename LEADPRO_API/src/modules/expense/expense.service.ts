@@ -9,6 +9,7 @@ import { ExpenseDto } from './expense.dto';
 import { Expense } from './expense.entity';
 import { IExpense } from './expense.interface';
 import { Cache } from "cache-manager";
+import { User } from '@flusys/flusysnest/persistence/entities';
 
 @Injectable()
 export class ExpenseService extends ApiService<ExpenseDto, IExpense, Expense, Repository<Expense>> {
@@ -27,7 +28,7 @@ export class ExpenseService extends ApiService<ExpenseDto, IExpense, Expense, Re
     );
   }
 
-  override async convertSingleDtoToEntity<T extends { id?: number }>(dto: T): Promise<Expense> {
+  override async convertSingleDtoToEntity(dto: ExpenseDto): Promise<Expense> {
     let expense = new Expense();
     if (dto.id && dto.id > 0) {
       const dbData = await this.repository.findOne({
@@ -44,8 +45,9 @@ export class ExpenseService extends ApiService<ExpenseDto, IExpense, Expense, Re
       ...expense,
       ...dto,
       ...{
-        organization: (dto["createdBy"] ?? dto["updatedBy"]).organizationId,
-      },
+        date: new Date(),
+        recordedBy: { id: dto.recordedById } as User,
+      }
     };
     return expense;
   }
@@ -56,17 +58,13 @@ export class ExpenseService extends ApiService<ExpenseDto, IExpense, Expense, Re
     }
     const selectFields = select.map(field => `${this.entityName}.${field}`);
 
-    selectFields.push("organization.name");
-    selectFields.push("organization.id");
-    query.leftJoinAndSelect("expense.organization", "organization");
+    selectFields.push("recordedBy.name");
+    selectFields.push("recordedBy.id");
+    query.leftJoinAndSelect("expense.recordedBy", "recordedBy");
     query.select(selectFields);
     const cacheKey = selectFields.join(',');
     return { query, cacheKey, isRaw: false };
   }
 
-  protected getExtraManipulateQuery(query: SelectQueryBuilder<Expense>, dto: FilterAndPaginationDto): { query: SelectQueryBuilder<Expense>, isRaw: boolean } {
-    query.andWhere(`organization.id = :organizationId`, { organizationId: dto['user'].organizationId });
-    return { query, isRaw: false };
-  }
 
 }
