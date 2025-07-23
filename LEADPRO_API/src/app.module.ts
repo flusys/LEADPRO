@@ -13,6 +13,7 @@ import { appconfig, appDataSource } from './app.config';
 import { RegistrationModule } from './modules/registration/registration.module';
 import { CashModule } from './modules/cash/cash.module';
 import { ExpenseModule } from './modules/expense/expense.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -36,7 +37,8 @@ import { ExpenseModule } from './modules/expense/expense.module';
     GalleryModule,
 
     CashModule,
-    ExpenseModule
+    ExpenseModule,
+    DashboardModule
   ],
   controllers: [AppController],
   providers: [AppService, JwtService,
