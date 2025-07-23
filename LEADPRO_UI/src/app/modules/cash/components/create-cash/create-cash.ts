@@ -1,5 +1,5 @@
 import { Component, effect, ElementRef, inject, viewChild, viewChildren } from '@angular/core';
-import { NgForm, FormControlName } from '@angular/forms';
+import { NgForm, FormControlName, FormControl } from '@angular/forms';
 import { AngularModule, PrimeModule } from '@flusys/flusysng/shared/modules';
 import { MessageService } from 'primeng/api';
 import { take } from 'rxjs';
@@ -7,12 +7,14 @@ import { ICash } from '../../interfaces/cash-data.interface';
 import { CashApiService } from '../../services/cash-api.service';
 import { CashFormService } from '../../services/cash-form.service';
 import { CashStateService } from '../../services/cash-state.service';
+import { UserDropdownComponent } from '@flusys/flusysng/shared/components'
 
 @Component({
   selector: 'app-create-cash',
   imports: [
     AngularModule,
-    PrimeModule
+    PrimeModule,
+    UserDropdownComponent
   ],
   templateUrl: './create-cash.html',
   styleUrl: './create-cash.scss'
@@ -63,6 +65,9 @@ export class CreateCash {
     })
   }
 
+  getControl(name:string){
+    return this.cashFormService.control(name) as FormControl;
+  }
 
   clearInputForm() {
     this.cashFormService.reset();

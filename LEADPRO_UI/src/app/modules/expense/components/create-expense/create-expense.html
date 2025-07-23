@@ -24,8 +24,7 @@
             <!-- Recorded By -->
             <div class="flex flex-wrap gap-2 w-full">
                 <label for="recordedById">Recorded By (User ID)</label>
-                <input pInputText formControlName="recordedById" class="w-full" id="recordedById" name="RecordedById"
-                    type="number" />
+              <lib-user-dropdown [isEditMode]="true" [componentFormControl]="getControl('recordedById')"  class="w-full"/>
             </div>
             <!-- Description -->
             <div class="flex flex-wrap gap-2 w-full col-span-3">

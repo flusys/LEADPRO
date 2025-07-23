@@ -1,5 +1,5 @@
 import { Component, effect, ElementRef, inject, viewChild, viewChildren } from '@angular/core';
-import { NgForm, FormControlName } from '@angular/forms';
+import { NgForm, FormControlName, FormControl } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { take } from 'rxjs';
 import { IExpense } from '../../interfaces/expense-data.interface';
@@ -7,12 +7,15 @@ import { ExpenseApiService } from '../../services/expense-api.service';
 import { ExpenseFormService } from '../../services/expense-form.service';
 import { ExpenseStateService } from '../../services/expense-state.service';
 import { AngularModule, PrimeModule } from '@flusys/flusysng/shared/modules';
+import { UserDropdownComponent } from '@flusys/flusysng/shared/components'
 
 @Component({
   selector: 'app-create-expense',
   imports: [
     AngularModule,
-    PrimeModule
+    PrimeModule,
+
+    UserDropdownComponent
   ],
   templateUrl: './create-expense.html',
   styleUrl: './create-expense.scss'
@@ -61,6 +64,10 @@ export class CreateExpense {
         return this.messageService.add({ key: 'tst', severity: 'warn', summary: 'Sorry!', detail: res.message });
       }
     })
+  }
+
+  getControl(name:string){
+    return this.expenseFormService.control(name) as FormControl;
   }
 
 
