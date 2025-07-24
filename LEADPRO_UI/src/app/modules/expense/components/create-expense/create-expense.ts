@@ -8,6 +8,7 @@ import { ExpenseFormService } from '../../services/expense-form.service';
 import { ExpenseStateService } from '../../services/expense-state.service';
 import { AngularModule, PrimeModule } from '@flusys/flusysng/shared/modules';
 import { UserDropdownComponent } from '@flusys/flusysng/shared/components'
+import { ZeroToNullDirective } from '@flusys/flusysng/shared/directives';
 
 @Component({
   selector: 'app-create-expense',
@@ -15,7 +16,8 @@ import { UserDropdownComponent } from '@flusys/flusysng/shared/components'
     AngularModule,
     PrimeModule,
 
-    UserDropdownComponent
+    UserDropdownComponent,
+    ZeroToNullDirective
   ],
   templateUrl: './create-expense.html',
   styleUrl: './create-expense.scss'

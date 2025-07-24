@@ -52,8 +52,8 @@ export class DashboardService {
   async getUserWiseCash(): Promise<IUserCashSummary[]> {
     const result = await this.cashRepository
       .createQueryBuilder('cash')
-      .innerJoin('cash.cashBy', 'user')
-      .innerJoin('user.profilePicture', 'profilePicture')
+      .leftJoin('cash.cashBy', 'user')
+      .leftJoin('user.profilePicture', 'profilePicture')
       .select('user.id', 'userId')
       .addSelect('user.name', 'userName')
       .addSelect('profilePicture.url', 'userImage')

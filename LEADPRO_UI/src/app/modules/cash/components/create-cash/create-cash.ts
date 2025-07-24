@@ -8,13 +8,15 @@ import { CashApiService } from '../../services/cash-api.service';
 import { CashFormService } from '../../services/cash-form.service';
 import { CashStateService } from '../../services/cash-state.service';
 import { UserDropdownComponent } from '@flusys/flusysng/shared/components'
+import { ZeroToNullDirective } from '@flusys/flusysng/shared/directives';
 
 @Component({
   selector: 'app-create-cash',
   imports: [
     AngularModule,
     PrimeModule,
-    UserDropdownComponent
+    UserDropdownComponent,
+    ZeroToNullDirective
   ],
   templateUrl: './create-cash.html',
   styleUrl: './create-cash.scss'
