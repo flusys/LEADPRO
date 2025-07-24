@@ -47,10 +47,10 @@ export class ExpenseStateService extends Store<StoreState> {
 
   constructor() {
     super(InitValue);
-    this.select('select')();
-    this.select('sort')();
-    this.select('filter')();
     effect(() => {
+      this.select('select')();
+      this.select('sort')();
+      this.select('filter')();
       untracked(() => {
         this.callApi();
       });

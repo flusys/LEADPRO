@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class Generate1753200996392 implements MigrationInterface {
-    name = 'Generate1753200996392'
+export class Generate1753333621869 implements MigrationInterface {
+    name = 'Generate1753333621869'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE \`folder\` (\`id\` int NOT NULL AUTO_INCREMENT, \`created_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), \`updated_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6), \`deleted_at\` datetime(6) NULL, \`name\` varchar(255) NOT NULL, \`slug\` varchar(255) NOT NULL, \`created_by\` int NULL, \`updated_by\` int NULL, \`deleted_by\` int NULL, \`organization_id\` int NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
@@ -21,6 +21,8 @@ export class Generate1753200996392 implements MigrationInterface {
         await queryRunner.query(`CREATE TABLE \`organization_branch\` (\`id\` int NOT NULL AUTO_INCREMENT, \`created_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), \`updated_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6), \`deleted_at\` datetime(6) NULL, \`read_only\` tinyint NOT NULL DEFAULT 0, \`name\` varchar(255) NOT NULL, \`slug\` varchar(255) NOT NULL, \`address\` longtext NULL, \`phone\` varchar(255) NULL, \`email\` varchar(255) NULL, \`serial\` int NULL, \`is_active\` tinyint NOT NULL DEFAULT 1, \`created_by\` int NULL, \`updated_by\` int NULL, \`deleted_by\` int NULL, \`image_id\` int NULL, \`parent_id\` int NULL, \`organization_id\` int NULL, UNIQUE INDEX \`IDX_7959957852249b5b6b58e0812b\` (\`slug\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`otp_validation\` (\`id\` int NOT NULL AUTO_INCREMENT, \`created_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), \`updated_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6), \`deleted_at\` datetime(6) NULL, \`client_request_id\` varchar(255) NOT NULL, \`value\` varchar(255) NOT NULL, \`code\` int NOT NULL, \`is_verified\` tinyint NOT NULL DEFAULT 0, \`created_by\` int NULL, \`updated_by\` int NULL, \`deleted_by\` int NULL, UNIQUE INDEX \`IDX_64459517a9c0516dcfeb70fa7f\` (\`client_request_id\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`user_personal_info\` (\`id\` int NOT NULL AUTO_INCREMENT, \`created_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), \`updated_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6), \`deleted_at\` datetime(6) NULL, \`father_name\` varchar(255) NULL, \`mother_name\` varchar(255) NULL, \`marital_status\` varchar(255) NULL, \`present_address\` text NULL, \`permanent_address\` text NULL, \`profession\` varchar(255) NULL, \`nominee_name\` varchar(255) NULL, \`relation_with_nominee\` varchar(255) NULL, \`comments\` text NULL, \`created_by\` int NULL, \`updated_by\` int NULL, \`deleted_by\` int NULL, \`user_id\` int NOT NULL, \`nid_photo_id\` int NULL, \`nominee_nid_photo_id\` int NULL, \`refer_user_id\` int NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`CREATE TABLE \`expense\` (\`id\` int NOT NULL AUTO_INCREMENT, \`created_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), \`updated_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6), \`deleted_at\` datetime(6) NULL, \`title\` varchar(200) NOT NULL, \`description\` text NULL, \`amount\` decimal(12,2) NOT NULL, \`type\` enum ('fixed', 'variable', 'one_time') NOT NULL DEFAULT 'variable', \`date\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), \`created_by\` int NULL, \`updated_by\` int NULL, \`deleted_by\` int NULL, \`recorded_by\` int NOT NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`CREATE TABLE \`cash\` (\`id\` int NOT NULL AUTO_INCREMENT, \`created_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), \`updated_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6), \`deleted_at\` datetime(6) NULL, \`date\` date NOT NULL, \`amount\` decimal(12,2) NOT NULL, \`type\` enum ('credit', 'debit') NOT NULL, \`note\` text NULL, \`created_by\` int NULL, \`updated_by\` int NULL, \`deleted_by\` int NULL, \`cash_by\` int NOT NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`ALTER TABLE \`folder\` ADD CONSTRAINT \`FK_afa55bd45385d7731c51de3eba3\` FOREIGN KEY (\`created_by\`) REFERENCES \`user\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`folder\` ADD CONSTRAINT \`FK_ae991a4ac1bad2af0c06be6c560\` FOREIGN KEY (\`updated_by\`) REFERENCES \`user\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`folder\` ADD CONSTRAINT \`FK_82a84faa50e26fca20759bb3c24\` FOREIGN KEY (\`deleted_by\`) REFERENCES \`user\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
@@ -102,9 +104,25 @@ export class Generate1753200996392 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE \`user_personal_info\` ADD CONSTRAINT \`FK_d39fdb10b9b1371666605df2a35\` FOREIGN KEY (\`nid_photo_id\`) REFERENCES \`gallery\`(\`id\`) ON DELETE SET NULL ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`user_personal_info\` ADD CONSTRAINT \`FK_961f12b246483a48d837dbbd557\` FOREIGN KEY (\`nominee_nid_photo_id\`) REFERENCES \`gallery\`(\`id\`) ON DELETE SET NULL ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`user_personal_info\` ADD CONSTRAINT \`FK_a23f383a4aaf0f6ec1c3ff64fe8\` FOREIGN KEY (\`refer_user_id\`) REFERENCES \`user\`(\`id\`) ON DELETE SET NULL ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`expense\` ADD CONSTRAINT \`FK_d7f0f7ca79854cf3b8a6eb0265f\` FOREIGN KEY (\`created_by\`) REFERENCES \`user\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`expense\` ADD CONSTRAINT \`FK_e03ae853c8541a99221514c8ae7\` FOREIGN KEY (\`updated_by\`) REFERENCES \`user\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`expense\` ADD CONSTRAINT \`FK_76027b498dcb26ee7074c6858dc\` FOREIGN KEY (\`deleted_by\`) REFERENCES \`user\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`expense\` ADD CONSTRAINT \`FK_249ef73eec456a37c899e369941\` FOREIGN KEY (\`recorded_by\`) REFERENCES \`user\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`cash\` ADD CONSTRAINT \`FK_8f84d7e2fe678cfe0698d5c6c7a\` FOREIGN KEY (\`created_by\`) REFERENCES \`user\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`cash\` ADD CONSTRAINT \`FK_51811f839b26b081efe01f0935f\` FOREIGN KEY (\`updated_by\`) REFERENCES \`user\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`cash\` ADD CONSTRAINT \`FK_7563aade7bf3f1fd27584ea620b\` FOREIGN KEY (\`deleted_by\`) REFERENCES \`user\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`cash\` ADD CONSTRAINT \`FK_badc477ee8c7f60784ffced5ccb\` FOREIGN KEY (\`cash_by\`) REFERENCES \`user\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`ALTER TABLE \`cash\` DROP FOREIGN KEY \`FK_badc477ee8c7f60784ffced5ccb\``);
+        await queryRunner.query(`ALTER TABLE \`cash\` DROP FOREIGN KEY \`FK_7563aade7bf3f1fd27584ea620b\``);
+        await queryRunner.query(`ALTER TABLE \`cash\` DROP FOREIGN KEY \`FK_51811f839b26b081efe01f0935f\``);
+        await queryRunner.query(`ALTER TABLE \`cash\` DROP FOREIGN KEY \`FK_8f84d7e2fe678cfe0698d5c6c7a\``);
+        await queryRunner.query(`ALTER TABLE \`expense\` DROP FOREIGN KEY \`FK_249ef73eec456a37c899e369941\``);
+        await queryRunner.query(`ALTER TABLE \`expense\` DROP FOREIGN KEY \`FK_76027b498dcb26ee7074c6858dc\``);
+        await queryRunner.query(`ALTER TABLE \`expense\` DROP FOREIGN KEY \`FK_e03ae853c8541a99221514c8ae7\``);
+        await queryRunner.query(`ALTER TABLE \`expense\` DROP FOREIGN KEY \`FK_d7f0f7ca79854cf3b8a6eb0265f\``);
         await queryRunner.query(`ALTER TABLE \`user_personal_info\` DROP FOREIGN KEY \`FK_a23f383a4aaf0f6ec1c3ff64fe8\``);
         await queryRunner.query(`ALTER TABLE \`user_personal_info\` DROP FOREIGN KEY \`FK_961f12b246483a48d837dbbd557\``);
         await queryRunner.query(`ALTER TABLE \`user_personal_info\` DROP FOREIGN KEY \`FK_d39fdb10b9b1371666605df2a35\``);
@@ -186,6 +204,8 @@ export class Generate1753200996392 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE \`folder\` DROP FOREIGN KEY \`FK_82a84faa50e26fca20759bb3c24\``);
         await queryRunner.query(`ALTER TABLE \`folder\` DROP FOREIGN KEY \`FK_ae991a4ac1bad2af0c06be6c560\``);
         await queryRunner.query(`ALTER TABLE \`folder\` DROP FOREIGN KEY \`FK_afa55bd45385d7731c51de3eba3\``);
+        await queryRunner.query(`DROP TABLE \`cash\``);
+        await queryRunner.query(`DROP TABLE \`expense\``);
         await queryRunner.query(`DROP TABLE \`user_personal_info\``);
         await queryRunner.query(`DROP INDEX \`IDX_64459517a9c0516dcfeb70fa7f\` ON \`otp_validation\``);
         await queryRunner.query(`DROP TABLE \`otp_validation\``);

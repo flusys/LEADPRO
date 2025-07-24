@@ -45,10 +45,10 @@ export class CashStateService extends Store<StoreState> {
 
   constructor() {
     super(InitValue);
+    effect(() => {
     this.select('select')();
     this.select('sort')();
     this.select('filter')();
-    effect(() => {
       untracked(() => {
         this.callApi();
       });

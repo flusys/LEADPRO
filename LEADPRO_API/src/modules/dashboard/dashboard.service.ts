@@ -25,13 +25,13 @@ export class DashboardService {
     // ➤ Last Month Date Range
     const now = new Date();
     const firstDayOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const firstDayOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const firstDayOfNextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
 
     const lastMonthCashResult = await this.cashRepository
       .createQueryBuilder('cash')
       .where('cash.date >= :start AND cash.date < :end', {
-        start: firstDayOfLastMonth.toISOString(),
-        end: firstDayOfThisMonth.toISOString(),
+        start: firstDayOfThisMonth.toISOString(),
+        end: firstDayOfNextMonth.toISOString(),
       })
       .select('COALESCE(SUM(cash.amount), 0)', 'lastMonthCashAmount')
       .getRawOne();

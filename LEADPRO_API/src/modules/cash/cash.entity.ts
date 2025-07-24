@@ -9,7 +9,7 @@ export class Cash extends Identity {
     @JoinColumn({ name: 'cash_by' })
     cashBy: User;
 
-    @CreateDateColumn({ name: 'date' })
+    @Column({ type: 'date' })
     date: Date;
 
     @Column({ type: 'decimal', precision: 12, scale: 2 })
