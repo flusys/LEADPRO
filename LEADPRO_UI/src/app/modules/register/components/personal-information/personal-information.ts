@@ -47,7 +47,27 @@ export class PersonalInformation {
       Object.entries(data).forEach(([key, value]) => {
         formData.append(key, value as string);
       });
-      
+      this.registerApi.registration(formData, data.fullName?.replaceAll(' ', '_')).subscribe({
+        next: (res) => {
+          if (res.success) {
+            this.clear();
+            this.messageService.add({
+              key: 'tst',
+              severity: 'success',
+              summary: 'Registration Successful',
+              detail: res.message,
+            });
+            this.router.navigate(['/auth/login']);
+          } else {
+            this.messageService.add({
+              key: 'tst',
+              severity: 'warn',
+              summary: 'Registration Failed',
+              detail: res.message || 'Something went wrong',
+            });
+          }
+        }
+      });
     } else {
       if (this.registrationFormService.formGroup.invalid) {
         this.registrationFormService.focusFirstInvalidInput(this.formControls() as ElementRef<any>[]);
