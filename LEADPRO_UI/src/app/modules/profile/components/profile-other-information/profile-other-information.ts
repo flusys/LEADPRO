@@ -70,7 +70,7 @@ export class ProfileOtherInformation implements OnInit {
 
 
   ngOnInit(): void {
-    this.profileInfoApi.getById(this.id()).pipe(take(1)).subscribe({
+    this.profileInfoApi.getById(this.id()??'').pipe(take(1)).subscribe({
       next: (res) => {
         const user = res.result;
         if (user) {

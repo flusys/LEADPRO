@@ -67,6 +67,15 @@ export class RegistrationController {
     return await this.registrationService.registerUser(responseObject, registrationDto);
   }
 
+  @Version(VERSION_NEUTRAL)
+  @Get("profile")
+  @UsePipes(ValidationPipe)
+  @UseGuards(JwtAuthGuard)
+  async getOwnProfile(
+    @User() user: ILoggedUserInfo,
+  ): Promise<IResponsePayload<IProfileInfo>> {
+    return await this.registrationService.findById(user.id, user); // or your own logic
+  }
 
   @Version(VERSION_NEUTRAL)
   @Get("profile/:id")
@@ -78,7 +87,6 @@ export class RegistrationController {
   ): Promise<IResponsePayload<IProfileInfo>> {
     return await this.registrationService.findById(id, user);
   }
-
 
 
   @Version(VERSION_NEUTRAL)
