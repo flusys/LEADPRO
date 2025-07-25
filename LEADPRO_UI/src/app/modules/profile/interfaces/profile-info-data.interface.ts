@@ -1,4 +1,5 @@
 import { IGallery } from "@flusys/flusysng/modules/gallery/gallery/interfaces";
+import { IUser } from "@flusys/flusysng/modules/settings/user/interfaces";
 
 
 export interface ProfileInfoData {
@@ -15,4 +16,5 @@ export interface ProfileInfoData {
     relationWithNominee: string;
     nomineeNidPhoto: IGallery;
     comments?: string;
+    referUser?: IUser;
 }

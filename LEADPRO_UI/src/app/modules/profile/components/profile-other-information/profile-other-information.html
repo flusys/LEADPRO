@@ -90,10 +90,17 @@
                     appEditModeElementChanger [isEditMode]="isEditMode()"></textarea>
             </div>
 
+            <!-- Cash By -->
+            <div class="flex flex-wrap gap-2 w-full">
+                <label for="referUserId">Refer By (User)</label>
+                <lib-user-dropdown [isEditMode]="isEditMode()" [componentFormControl]="getControl('referUserId')"
+                    class="w-full" />
+            </div>
+
             <!-- NID Upload -->
             <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
-                <div class="flex flex-row justify-between">
-                    <div>
+                <div class="flex flex-row gap-2 justify-between">
+                    <div class="flex flex-col gap-2 justify-between">
                         <label>NID File/Photo with Signature <span class="text-red-500">*</span></label>
                         <input type="file" accept="image/*,application/pdf" (change)="onFileChange($event, 'nidPhoto')"
                             appEditModeElementChanger [isEditMode]="isEditMode()" />
@@ -110,8 +117,8 @@
             </div>
 
             <div class="flex flex-col gap-2 w-full">
-                <div class="flex flex-row justify-between">
-                    <div>
+                <div class="flex flex-row gap-2 justify-between">
+                    <div class="flex flex-col gap-2 justify-between">
                         <label>Nominee NID File/Photo <span class="text-red-500">*</span></label>
                         <input type="file" accept="image/*,application/pdf"
                             (change)="onFileChange($event, 'nomineeNidPhoto')" appEditModeElementChanger

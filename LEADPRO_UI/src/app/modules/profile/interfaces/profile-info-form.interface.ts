@@ -15,4 +15,5 @@ export interface IProfileInfoForm {
     nidPhotoUrl: FormControl<string>;
     nomineeNidPhotoUrl: FormControl<string>;
     comments: FormControl<string | null>;
+    referUserId: FormControl<string>;
 }

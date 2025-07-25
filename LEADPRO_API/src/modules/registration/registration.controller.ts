@@ -25,7 +25,7 @@ import { UploadService } from '@flusys/flusysnest/modules/gallery/apis';
 import { JwtAuthGuard } from "@flusys/flusysnest/core/guards";
 import { IProfileInfo } from './interfaces/profile-info-data.interface';
 import { User } from "@flusys/flusysnest/shared/decorators";
-import { ProfileInfoDto } from './dtos/registration-info.dto';
+import { ProfileInfoDto } from './dtos/profile-info.dto';
 
 @Controller('')
 export class RegistrationController {

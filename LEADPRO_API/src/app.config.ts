@@ -24,7 +24,7 @@ export const appconfig = (): IAppConfig => ({
     userJwtSecret: 'project2025',
     cookieDomainName: envConfig.getCookieDomainName(),
     userTokenCookieName: 'refreshToken',
-    userTokenExpiredTime: 5,
+    userTokenExpiredTime: 24 * 60 * 60,
     userRefreshTokenExpiredTime: 168 * 60 * 60,
     organizationPremised: false,
     uploader: 'file',

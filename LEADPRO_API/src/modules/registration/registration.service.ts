@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, QueryFailedError, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -16,12 +16,13 @@ import { FileTypes } from '@flusys/flusysnest/shared/enums';
 import * as fs from 'fs';
 import { join } from 'path';
 import { IProfileInfo } from './interfaces/profile-info-data.interface';
-import { ProfileInfoDto } from './dtos/registration-info.dto';
+import { ProfileInfoDto } from './dtos/profile-info.dto';
 import { UploadService } from '@flusys/flusysnest/modules/gallery/apis';
 import { UtilsService } from '@flusys/flusysnest/shared/modules';
 
 @Injectable()
 export class RegistrationService {
+  private readonly logger = new Logger(RegistrationService.name);
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -152,7 +153,7 @@ export class RegistrationService {
       } as unknown as IResponsePayload<IUser>;
     } catch (error: any) {
       await queryRunner.rollbackTransaction();
-
+      this.logger.error(error);
       if (error instanceof QueryFailedError && error.driverError.code === '23505') {
         const { columnName } = this.utilsService.extractColumnNameFromError(
           error.driverError.detail,
@@ -200,6 +201,7 @@ export class RegistrationService {
           type: userInformation.nomineeNidPhoto?.type,
         } : null,
         comments: userInformation.comments,
+        referUser: userInformation.referUser,
       } : null;
       return {
         success: true,
@@ -207,7 +209,7 @@ export class RegistrationService {
         result: object,
       } as unknown as IResponsePayload<IProfileInfo>;
     } catch (error: any) {
-      console.log(error);
+      this.logger.error(error);
       if (error instanceof QueryFailedError) {
         if (error.driverError.errno == 1062) {
           throw new QueryFailedError("Duplicate Entry Error", [], error);
@@ -267,6 +269,18 @@ export class RegistrationService {
           userInformation.nomineeNidPhoto = savedGallery;
         }
 
+        if (dto.referUserId) {
+          const user = await this.userRepository.findOneBy({ id: dto.referUserId });
+          if (!user) {
+            await queryRunner.rollbackTransaction();
+            return {
+              success: false,
+              message: 'Refer User Not Found',
+            };
+          }
+          userInformation.referUser = { id: user.id } as User;
+        }
+
         await queryRunner.manager.save(userInformation);
 
         await queryRunner.commitTransaction();
@@ -316,7 +330,17 @@ export class RegistrationService {
         const savedGallery = await queryRunner.manager.save(this.galleryRepository.target, gallery);
         userInformation.nomineeNidPhoto = savedGallery;
       }
-
+      if (dto.referUserId) {
+        const user = await this.userRepository.findOneBy({ id: dto.referUserId });
+        if (!user) {
+          await queryRunner.rollbackTransaction();
+          return {
+            success: false,
+            message: 'Refer User Not Found',
+          };
+        }
+        userInformation.referUser = { id: user.id } as User;
+      }
       await queryRunner.manager.save(userInformation);
 
       await queryRunner.commitTransaction();
@@ -329,7 +353,8 @@ export class RegistrationService {
         message: 'User Information Updated',
       } as unknown as IResponsePayload<null>;
     } catch (error) {
-      console.error('Failed to create/update user personal info:', error);
+      await queryRunner.rollbackTransaction();
+      this.logger.error('Failed to create/update user personal info:', error);
       return {
         success: false,
         message: 'Something went wrong while saving user information.',
@@ -346,7 +371,7 @@ export class RegistrationService {
       const filePath = gallery.url.split('/image/')[1];
       await this.uploadService.deleteSingleFile(filePath);
     } catch (error) {
-      console.error(`Failed to delete gallery and file for ID ${id}:`, error);
+      this.logger.error(`Failed to delete gallery and file for ID ${id}:`, error);
     }
   }
 

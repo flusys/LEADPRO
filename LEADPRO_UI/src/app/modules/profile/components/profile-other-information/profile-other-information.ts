@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, ElementRef, inject, input, OnInit, viewChild, viewChildren } from '@angular/core';
-import { NgForm, FormControlName } from '@angular/forms';
+import { NgForm, FormControlName, FormControl } from '@angular/forms';
 import { AngularModule, PrimeModule } from '@flusys/flusysng/shared/modules';
 import { MessageService } from 'primeng/api';
 import { Subscription, take } from 'rxjs';
@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { ProfileInfoApi } from '../../services/profile-info-api';
 import { AuthenticationStateService } from '@flusys/flusysng/auth/services';
 import { EditModeElementChangerDirective } from '@flusys/flusysng/shared/directives';
+import { UserDropdownComponent } from '@flusys/flusysng/shared/components';
 
 @Component({
   selector: 'app-profile-other-information',
@@ -16,6 +17,7 @@ import { EditModeElementChangerDirective } from '@flusys/flusysng/shared/directi
     PrimeModule,
     //Directive
     EditModeElementChangerDirective,
+    UserDropdownComponent,
   ],
   templateUrl: './profile-other-information.html',
   styleUrl: './profile-other-information.scss'
@@ -61,6 +63,9 @@ export class ProfileOtherInformation implements OnInit {
     }
   }
 
+  getControl(name: string) {
+    return this.profileInfoFormService.control(name) as FormControl;
+  }
 
 
 
@@ -76,6 +81,7 @@ export class ProfileOtherInformation implements OnInit {
               nomineeNidPhoto: null,
               nidPhotoUrl: user.nidPhoto?.url,
               nomineeNidPhotoUrl: user.nomineeNidPhoto?.url,
+              referUserId: user.referUser ? user.referUser?.id : '',
             }
           });
         } else {

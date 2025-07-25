@@ -66,6 +66,9 @@ export class ProfileInfoForm extends FormCommonClass<IProfileInfoForm> {
         nonNullable: true,
       }),
       comments: new FormControl<string | null>(null),
+      referUserId: new FormControl<string>('', {
+        nonNullable: true,
+      }),
     });
   }
 
