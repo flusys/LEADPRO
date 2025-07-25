@@ -54,7 +54,7 @@ export class CashList {
 
   deleteOrRestore(type: string) {
     if (this.selectedCash.length) {
-      let ids: number[] = [];
+      let ids: string[] = [];
       if (type == 'restore') {
         ids = this.selectedCash.filter((item) => item.deletedAt).map((item) => item.id);
       } else {

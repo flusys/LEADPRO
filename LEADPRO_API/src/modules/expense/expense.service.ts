@@ -25,12 +25,13 @@ export class ExpenseService extends ApiService<ExpenseDto, IExpense, Expense, Re
       expenseRepository,
       cacheManager,
       utilsService,
+      ExpenseService.name
     );
   }
 
   override async convertSingleDtoToEntity(dto: ExpenseDto): Promise<Expense> {
     let expense = new Expense();
-    if (dto.id && dto.id > 0) {
+    if (dto.id && dto.id && dto.id != '') {
       const dbData = await this.repository.findOne({
         where: { id: dto.id },
       });

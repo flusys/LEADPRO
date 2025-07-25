@@ -21,8 +21,7 @@ import { RegistrationService } from './registration.service';
 import { IUser } from '@flusys/flusysnest/modules/settings/interfaces';
 import { RegistrationDto } from './dtos/registration.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { editFileName, getUploadPath, UploadService } from '@flusys/flusysnest/modules/gallery/apis';
+import { UploadService } from '@flusys/flusysnest/modules/gallery/apis';
 import { JwtAuthGuard } from "@flusys/flusysnest/core/guards";
 import { IProfileInfo } from './interfaces/profile-info-data.interface';
 import { User } from "@flusys/flusysnest/shared/decorators";
@@ -30,7 +29,6 @@ import { ProfileInfoDto } from './dtos/registration-info.dto';
 
 @Controller('')
 export class RegistrationController {
-  private logger = new Logger(RegistrationController.name);
 
   constructor(private registrationService: RegistrationService,
     private uploadService: UploadService,
@@ -75,7 +73,7 @@ export class RegistrationController {
   @UsePipes(ValidationPipe)
   @UseGuards(JwtAuthGuard)
   async getById(
-    @Param("id") id: number,
+    @Param("id") id: string,
     @User() user: ILoggedUserInfo,
   ): Promise<IResponsePayload<IProfileInfo>> {
     return await this.registrationService.findById(id, user);
@@ -94,7 +92,7 @@ export class RegistrationController {
   )
   @UseGuards(JwtAuthGuard)
   async updateProfile(
-    @Param("id") id: number,
+    @Param("id") id: string,
     @User() user: ILoggedUserInfo,
     @Body() registrationDto: ProfileInfoDto,
     @UploadedFiles()

@@ -4,16 +4,24 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 import { DataSource } from 'typeorm';
 import { AppModule } from './app.module';
-import { seedData } from '@flusys/flusysnest/core/data';
 import { envConfig } from '@flusys/flusysnest/core/config';
+import { WinstonModule } from 'nest-winston';
+import { instance } from './winston.logger';
+import { TransformResponseInterceptor } from '@flusys/flusysnest/shared/interceptors';
+import { seedData } from '@flusys/flusysnest/core/data';
+import { seedMenuV1Data } from './persistence/seeds/menu_v1.seed';
 
 async function bootstrap() {
-  const logger = new Logger('Bootstrap');
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: WinstonModule.createLogger({
+      instance: instance,
+    }),
+  });
 
   // Seed Package Data;
-  // const dataSource = app.get(DataSource);
+  const dataSource = app.get(DataSource);
   // await seedData(dataSource, 'Lead Pro', 'lead_pro');
+  //  await seedMenuV1Data(dataSource);
 
   app.enableCors({
     origin: envConfig.getOrigins(),
@@ -21,6 +29,9 @@ async function bootstrap() {
     credentials: true,
     allowedHeaders: 'Content-Type, Authorization',
   });
+
+
+  app.useGlobalInterceptors(new TransformResponseInterceptor());
 
   // Version Control
   app.enableVersioning({
@@ -34,17 +45,17 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .addBearerAuth()
-    .setTitle('LeadPro example')
-    .setDescription('The LeadPro API description')
+    .setTitle('Billings example')
+    .setDescription('The Billings API description')
     .setVersion('1.0')
-    .addTag('LeadPro')
+    .addTag('Billings')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
 
-  const port = process.env.PORT || 3000;
+  const port = envConfig.getPort() || 3000;
   await app.listen(port);
-  logger.log(`Application is running on port ${port}`);
+  console.log(`Application is running on port ${port}`);
 }
 
 bootstrap();

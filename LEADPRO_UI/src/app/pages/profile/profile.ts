@@ -13,5 +13,5 @@ import { ProfileOtherInformation } from '../../modules/profile/components/profil
   styleUrl: './profile.scss'
 })
 export class Profile {
-  id = input<number>();
+  id = input<string>('');
 }

@@ -5,7 +5,7 @@ import { ApiProperty } from '@nestjs/swagger';
 export class CashDto {
     @ApiProperty()
     @IsOptional()
-    id: number;
+    id?: string;
 
     @ApiProperty()
     @IsNumber()
@@ -23,7 +23,7 @@ export class CashDto {
     note?: string;
 
     @ApiProperty()
-    @IsNumber()
+    @IsString()
     @IsNotEmpty()
-    cashById: number;
+    cashById: string;
 }

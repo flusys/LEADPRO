@@ -7,18 +7,23 @@ import { ProfileInfoForm } from '../../services/profile-info-form';
 import { Router } from '@angular/router';
 import { ProfileInfoApi } from '../../services/profile-info-api';
 import { AuthenticationStateService } from '@flusys/flusysng/auth/services';
+import { EditModeElementChangerDirective } from '@flusys/flusysng/shared/directives';
 
 @Component({
   selector: 'app-profile-other-information',
   imports: [
     AngularModule,
-    PrimeModule
+    PrimeModule,
+    //Directive
+    EditModeElementChangerDirective,
   ],
   templateUrl: './profile-other-information.html',
   styleUrl: './profile-other-information.scss'
 })
 export class ProfileOtherInformation implements OnInit {
-  id = input.required<number>();
+  id = input.required<string>();
+  isEditMode = input.required<boolean>();
+
   profileInfoApi = inject(ProfileInfoApi);
   authStateService = inject(AuthenticationStateService);
   router = inject(Router)

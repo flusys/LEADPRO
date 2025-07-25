@@ -25,7 +25,7 @@ export class CashFormService extends FormCommonClass<ICashForm> {
 
   initForm() {
     this.formGroup = new FormGroup<ICashForm>({
-      id: new FormControl(0, { nonNullable: true }),
+      id: new FormControl('', { nonNullable: true }),
       amount: new FormControl(0, {
         nonNullable: true,
         validators: [Validators.required, Validators.min(0.01)],

@@ -167,7 +167,7 @@ export class RegistrationService {
   }
 
 
-  async findById(userId: number, user: ILoggedUserInfo,): Promise<IResponsePayload<IProfileInfo>> {
+  async findById(userId: string, user: ILoggedUserInfo,): Promise<IResponsePayload<IProfileInfo>> {
     try {
       if (!userId) {
         userId = user.id;
@@ -220,7 +220,7 @@ export class RegistrationService {
   }
 
   async updateProfile(
-    userId: number,
+    userId: string,
     user: ILoggedUserInfo,
     dto: ProfileInfoDto,
     nidPhotoObject: IFileUploadResponse | null,
@@ -231,7 +231,7 @@ export class RegistrationService {
     await queryRunner.startTransaction();
 
     // To track deletions for manual cleanup if commit succeeds
-    const deletedGalleryIds: number[] = [];
+    const deletedGalleryIds: string[] = [];
     try {
       if (!userId) {
         userId = user.id;
@@ -337,7 +337,7 @@ export class RegistrationService {
     }
   }
 
-  async deleteGalleryAndFile(id: number): Promise<void> {
+  async deleteGalleryAndFile(id: string): Promise<void> {
     try {
       const gallery = await this.galleryRepository.findOneBy({ id });
       if (!gallery) return;

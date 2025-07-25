@@ -25,12 +25,13 @@ export class CashService extends ApiService<CashDto, ICash, Cash, Repository<Cas
       cashRepository,
       cacheManager,
       utilsService,
+      CashService.name
     );
   }
 
   override async convertSingleDtoToEntity(dto: CashDto): Promise<Cash> {
     let cash = new Cash();
-    if (dto.id && dto.id > 0) {
+    if (dto.id && dto.id && dto.id != '') {
       const dbData = await this.repository.findOne({
         where: { id: dto.id },
       });

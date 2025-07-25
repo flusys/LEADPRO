@@ -25,7 +25,7 @@ export class ExpenseFormService extends FormCommonClass<IExpenseForm> {
 
   initForm() {
     this.formGroup = new FormGroup<IExpenseForm>({
-      id: new FormControl(0, { nonNullable: true }),
+      id: new FormControl('', { nonNullable: true }),
       title: new FormControl('', {
         nonNullable: true,
         validators: [Validators.required],

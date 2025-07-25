@@ -5,7 +5,7 @@ import { ApiProperty } from '@nestjs/swagger';
 export class ExpenseDto {
     @ApiProperty()
     @IsOptional()
-    id: number;
+    id: string;
     
     @ApiProperty()
     @IsString()
@@ -28,7 +28,7 @@ export class ExpenseDto {
     type: ExpenseType = ExpenseType.VARIABLE;
 
     @ApiProperty()
-    @IsNumber()
+    @IsString()
     @IsNotEmpty()
-    recordedById: number; 
+    recordedById: string; 
 }

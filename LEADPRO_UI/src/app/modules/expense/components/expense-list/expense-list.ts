@@ -54,7 +54,7 @@ export class ExpenseList {
 
   deleteOrRestore(type: string) {
     if (this.selectedExpense.length) {
-      let ids: number[] = [];
+      let ids: string[] = [];
       if (type == 'restore') {
         ids = this.selectedExpense.filter((item) => item.deletedAt).map((item) => item.id);
       } else {

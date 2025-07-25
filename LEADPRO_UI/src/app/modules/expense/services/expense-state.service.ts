@@ -91,7 +91,7 @@ export class ExpenseStateService extends Store<StoreState> {
     this.setState({ data: stateValue })
   }
 
-  deleteItemFromList(type: 'delete' | 'restore', ids: number[]) {
+  deleteItemFromList(type: 'delete' | 'restore', ids: string[]) {
     if (type == 'delete') {
       let stateValue = this.select('data')();
       let result = stateValue.result.filter((item) => !ids.includes(item.id));

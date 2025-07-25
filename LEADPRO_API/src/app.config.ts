@@ -13,7 +13,7 @@ export const appDataSource = new DataSource({
     ],
     migrationsTableName: 'migrations',
     migrations: [
-        __dirname + '/migrations/*{.ts,.js}'
+        __dirname + '/persistence/migrations/*{.ts,.js}'
     ],
     migrationsRun: false,
     synchronize: false,
@@ -24,7 +24,7 @@ export const appconfig = (): IAppConfig => ({
     userJwtSecret: 'project2025',
     cookieDomainName: envConfig.getCookieDomainName(),
     userTokenCookieName: 'refreshToken',
-    userTokenExpiredTime: 24 * 60 * 60,
+    userTokenExpiredTime: 5,
     userRefreshTokenExpiredTime: 168 * 60 * 60,
     organizationPremised: false,
     uploader: 'file',
