@@ -40,7 +40,12 @@ export class CreateCash {
       if (model) {
         this.model = model;
         this.isPanelCollapsed = false;
-        this.cashFormService.patchValue({ ...model });
+        this.cashFormService.patchValue({
+          ...model,
+          ...{
+            cashById: model.cashBy?.id
+          }
+        });
       } else {
         this.model = undefined;
       }
@@ -59,7 +64,7 @@ export class CreateCash {
       if (res.success) {
         this.messageService.add({ key: 'tst', severity: 'success', summary: 'Success!', detail: res.message });
         this.cashFormService.patchValue({ ...res.result });
-        this.cashStateService.addOrUpdateDataList(this.cashFormService.value);
+        this.cashStateService.reset();
         this.clearInputForm()
       } else {
         return this.messageService.add({ key: 'tst', severity: 'warn', summary: 'Sorry!', detail: res.message });
@@ -67,7 +72,7 @@ export class CreateCash {
     })
   }
 
-  getControl(name:string){
+  getControl(name: string) {
     return this.cashFormService.control(name) as FormControl;
   }
 

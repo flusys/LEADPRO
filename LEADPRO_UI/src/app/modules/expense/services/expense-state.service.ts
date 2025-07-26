@@ -75,21 +75,6 @@ export class ExpenseStateService extends Store<StoreState> {
     });
   }
 
-  addOrUpdateDataList(data: ɵFormGroupValue<IExpenseForm>) {
-    let stateValue = this.select('data')();
-    let result = stateValue.result;
-
-    if (data.id) {
-      let item = result.find((item) => item.id == data.id)
-      if (item) {
-        result = result.map((item) => item.id == data.id ? { ...item, ...data } : item)
-      } else {
-        result.push(data as IExpense);
-      }
-    }
-    stateValue = { ...stateValue, ...{ result: result } }
-    this.setState({ data: stateValue })
-  }
 
   deleteItemFromList(type: 'delete' | 'restore', ids: string[]) {
     if (type == 'delete') {

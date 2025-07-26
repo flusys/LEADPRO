@@ -41,7 +41,12 @@ export class CreateExpense {
       if (model) {
         this.model = model;
         this.isPanelCollapsed = false;
-        this.expenseFormService.patchValue({ ...model });
+        this.expenseFormService.patchValue({ 
+          ...model,
+          ...{
+            recordedById: model.recordedBy?.id
+          }
+        });
       } else {
         this.model = undefined;
       }
@@ -60,7 +65,7 @@ export class CreateExpense {
       if (res.success) {
         this.messageService.add({ key: 'tst', severity: 'success', summary: 'Success!', detail: res.message });
         this.expenseFormService.patchValue({ ...res.result });
-        this.expenseStateService.addOrUpdateDataList(this.expenseFormService.value);
+        this.expenseStateService.reset();
         this.clearInputForm()
       } else {
         return this.messageService.add({ key: 'tst', severity: 'warn', summary: 'Sorry!', detail: res.message });

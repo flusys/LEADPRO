@@ -46,9 +46,9 @@ export class CashStateService extends Store<StoreState> {
   constructor() {
     super(InitValue);
     effect(() => {
-    this.select('select')();
-    this.select('sort')();
-    this.select('filter')();
+      this.select('select')();
+      this.select('sort')();
+      this.select('filter')();
       untracked(() => {
         this.callApi();
       });
@@ -73,21 +73,6 @@ export class CashStateService extends Store<StoreState> {
     });
   }
 
-  addOrUpdateDataList(data: ɵFormGroupValue<ICashForm>) {
-    let stateValue = this.select('data')();
-    let result = stateValue.result;
-
-    if (data.id) {
-      let item = result.find((item) => item.id == data.id)
-      if (item) {
-        result = result.map((item) => item.id == data.id ? { ...item, ...data } : item)
-      } else {
-        result.push(data as ICash);
-      }
-    }
-    stateValue = { ...stateValue, ...{ result: result } }
-    this.setState({ data: stateValue })
-  }
 
   deleteItemFromList(type: 'delete' | 'restore', ids: string[]) {
     if (type == 'delete') {
