@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, inject, input, OnInit, viewChild, viewChildren } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, inject, input, OnInit, signal, viewChild, viewChildren } from '@angular/core';
 import { NgForm, FormControlName, FormControl } from '@angular/forms';
 import { AngularModule, PrimeModule } from '@flusys/flusysng/shared/modules';
 import { MessageService } from 'primeng/api';
@@ -8,7 +8,8 @@ import { Router } from '@angular/router';
 import { ProfileInfoApi } from '../../services/profile-info-api';
 import { AuthenticationStateService } from '@flusys/flusysng/auth/services';
 import { EditModeElementChangerDirective } from '@flusys/flusysng/shared/directives';
-import { UserDropdownComponent } from '@flusys/flusysng/shared/components';
+import { UserSelectComponent } from '@flusys/flusysng/shared/components';
+import { IDropDown } from '@flusys/flusysng/shared/interfaces';
 
 @Component({
   selector: 'app-profile-other-information',
@@ -17,7 +18,7 @@ import { UserDropdownComponent } from '@flusys/flusysng/shared/components';
     PrimeModule,
     //Directive
     EditModeElementChangerDirective,
-    UserDropdownComponent,
+    UserSelectComponent,
   ],
   templateUrl: './profile-other-information.html',
   styleUrl: './profile-other-information.scss'
@@ -33,6 +34,7 @@ export class ProfileOtherInformation implements OnInit {
   readonly formControls = viewChildren(FormControlName, { read: ElementRef });
   private cd = inject(ChangeDetectorRef);
 
+  editSelectedReferUser = signal<IDropDown | null>(null);
 
   profileInfoFormService = inject(ProfileInfoForm)
   messageService = inject(MessageService)
@@ -70,7 +72,7 @@ export class ProfileOtherInformation implements OnInit {
 
 
   ngOnInit(): void {
-    this.profileInfoApi.getById(this.id()??'').pipe(take(1)).subscribe({
+    this.profileInfoApi.getById(this.id() ?? '').pipe(take(1)).subscribe({
       next: (res) => {
         const user = res.result;
         if (user) {
@@ -84,6 +86,10 @@ export class ProfileOtherInformation implements OnInit {
               referUserId: user.referUser ? user.referUser?.id : '',
             }
           });
+          this.editSelectedReferUser.set(user.referUser ? {
+            label: user.referUser?.name,
+            value: user.referUser?.id
+          } : null);
         } else {
           const user = this.authStateService.loginUserData();
           this.profileInfoFormService.patchValue({

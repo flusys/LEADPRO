@@ -93,8 +93,8 @@
             <!-- Cash By -->
             <div class="flex flex-wrap gap-2 w-full">
                 <label for="referUserId">Refer By (User)</label>
-                <lib-user-dropdown [isEditMode]="isEditMode()" [componentFormControl]="getControl('referUserId')"
-                    class="w-full" />
+                <lib-user-select [isEditMode]="isEditMode()" [componentFormControl]="getControl('referUserId')"
+                    class="w-full" [selectedValue]="editSelectedReferUser()" placeHolder="Select Refer User" />
             </div>
 
             <!-- NID Upload -->

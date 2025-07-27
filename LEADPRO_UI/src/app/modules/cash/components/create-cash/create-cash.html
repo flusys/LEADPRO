@@ -5,7 +5,8 @@
             <!-- Cash By -->
             <div class="flex flex-wrap gap-2 w-full">
                 <label for="cashById">Cash By (User)</label>
-                <lib-user-dropdown [isEditMode]="true" [componentFormControl]="getControl('cashById')"  class="w-full"/>
+                <lib-user-select [isEditMode]="true" [componentFormControl]="getControl('cashById')"  class="w-full"
+                [selectedValue]="cashBy()" placeHolder="Select Cash By" />
             </div>
 
             <!-- Amount -->

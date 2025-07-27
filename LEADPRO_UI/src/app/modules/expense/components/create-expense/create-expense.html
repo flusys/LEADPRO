@@ -11,7 +11,8 @@
             <!-- Amount -->
             <div class="flex flex-wrap gap-2 w-full">
                 <label for="amount">Amount</label>
-                <input pInputText formControlName="amount" class="w-full" id="amount" name="Amount" type="number" appZeroToNull/>
+                <input pInputText formControlName="amount" class="w-full" id="amount" name="Amount" type="number"
+                    appZeroToNull />
             </div>
 
             <!-- Type -->
@@ -24,7 +25,8 @@
             <!-- Recorded By -->
             <div class="flex flex-wrap gap-2 w-full">
                 <label for="recordedById">Recorded By (User ID)</label>
-              <lib-user-dropdown [isEditMode]="true" [componentFormControl]="getControl('recordedById')"  class="w-full"/>
+                <lib-user-select [isEditMode]="true" [componentFormControl]="getControl('recordedById')" class="w-full"
+                    [selectedValue]="recordedBy()" placeHolder="Select Recorded By" />
             </div>
             <!-- Description -->
             <div class="flex flex-wrap gap-2 w-full col-span-3">

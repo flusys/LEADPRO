@@ -1,4 +1,4 @@
-import { Component, effect, ElementRef, inject, viewChild, viewChildren } from '@angular/core';
+import { Component, effect, ElementRef, inject, signal, viewChild, viewChildren } from '@angular/core';
 import { NgForm, FormControlName, FormControl } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { take } from 'rxjs';
@@ -7,8 +7,9 @@ import { ExpenseApiService } from '../../services/expense-api.service';
 import { ExpenseFormService } from '../../services/expense-form.service';
 import { ExpenseStateService } from '../../services/expense-state.service';
 import { AngularModule, PrimeModule } from '@flusys/flusysng/shared/modules';
-import { UserDropdownComponent } from '@flusys/flusysng/shared/components'
+import { UserSelectComponent } from '@flusys/flusysng/shared/components'
 import { ZeroToNullDirective } from '@flusys/flusysng/shared/directives';
+import { IDropDown } from '@flusys/flusysng/shared/interfaces';
 
 @Component({
   selector: 'app-create-expense',
@@ -16,7 +17,7 @@ import { ZeroToNullDirective } from '@flusys/flusysng/shared/directives';
     AngularModule,
     PrimeModule,
 
-    UserDropdownComponent,
+    UserSelectComponent,
     ZeroToNullDirective
   ],
   templateUrl: './create-expense.html',
@@ -32,6 +33,7 @@ export class CreateExpense {
   model: IExpense | undefined;
 
 
+  recordedBy = signal<IDropDown | null>(null);
   readonly inputForm = viewChild.required<NgForm>('inputForm');
   readonly formControls = viewChildren(FormControlName, { read: ElementRef });
 
@@ -47,6 +49,10 @@ export class CreateExpense {
             recordedById: model.recordedBy?.id
           }
         });
+         this.recordedBy.set(model.recordedBy ? {
+          label: model.recordedBy?.name,
+          value: model.recordedBy?.id
+        } : null);
       } else {
         this.model = undefined;
       }
