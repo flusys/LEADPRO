@@ -129,6 +129,7 @@ export class RegistrationService {
         scopeId: organization.id,
         isActive: false,
         readOnly: false,
+        organizationId: organization.id,
         createdBy: savedUser.id as unknown as User, // optional if needed
       });
       await queryRunner.manager.save(orgPermission);
@@ -142,6 +143,7 @@ export class RegistrationService {
           scopeId: organizationBranch.id,
           isActive: true,
           readOnly: false,
+          organizationId: organization.id,
           createdBy: savedUser.id as unknown as User, // optional if needed
         });
         await queryRunner.manager.save(branchPermission);
