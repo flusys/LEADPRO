@@ -53,7 +53,7 @@ export class CashService extends ApiService<CashDto, ICash, Cash, Repository<Cas
     return cash;
   }
 
-  override getSelectQuery(query: SelectQueryBuilder<Cash>, select?: string[]): { query: SelectQueryBuilder<Cash>, cacheKey: string, isRaw: boolean } {
+  override async getSelectQuery(query: SelectQueryBuilder<Cash>, select?: string[]) {
     if (!select || !select.length) {
       select = ['id', 'name', 'createdAt', 'deletedAt'];
     }

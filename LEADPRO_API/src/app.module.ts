@@ -8,7 +8,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AppRoutingModule } from './app-routing.module';
-import { SettingsModule, OrganizationModule, AuthModule, GalleryModule } from '@flusys/flusysnest/pages';
+import { SettingsModule, OrganizationModule, AuthModule, GalleryModule, PermissionModule } from '@flusys/flusysnest/pages';
 import { appconfig, appDataSource } from './app.config';
 import { RegistrationModule } from './modules/registration/registration.module';
 import { CashModule } from './modules/cash/cash.module';
@@ -35,6 +35,7 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
     SettingsModule,
     OrganizationModule,
     GalleryModule,
+    PermissionModule,
 
     CashModule,
     ExpenseModule,

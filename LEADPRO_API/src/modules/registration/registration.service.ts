@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, QueryFailedError, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -7,14 +7,12 @@ import {
   ILoggedUserInfo,
   IResponsePayload
 } from '@flusys/flusysnest/shared/interfaces';
-import { Organization, OrganizationBranch, Gallery, User, UserOrganization, UserOrganizationBranch } from '@flusys/flusysnest/persistence/entities';
+import { Organization, OrganizationBranch, Gallery, User, Permission, } from '@flusys/flusysnest/persistence/entities';
 import { IUser } from '@flusys/flusysnest/modules/settings/interfaces';
 import { RegistrationDto } from './dtos/registration.dto';
 import { UserPersonalInfo } from './user-personal-info.entity';
 import { IGallery } from '@flusys/flusysnest/modules/gallery/interfaces';
-import { FileTypes } from '@flusys/flusysnest/shared/enums';
-import * as fs from 'fs';
-import { join } from 'path';
+import { FileTypes, ScopeType, SubjectType } from '@flusys/flusysnest/shared/enums';
 import { IProfileInfo } from './interfaces/profile-info-data.interface';
 import { ProfileInfoDto } from './dtos/profile-info.dto';
 import { UploadService } from '@flusys/flusysnest/modules/gallery/apis';
@@ -123,24 +121,30 @@ export class RegistrationService {
       });
 
 
-      // Save UserOrganization
-      const userOrganization = queryRunner.manager.create(UserOrganization, {
-        user: savedUser,
-        organization,
+      // Save Permission for Organization
+      const orgPermission = queryRunner.manager.create(Permission, {
+        subjectType: SubjectType.USER,
+        subjectId: savedUser.id,
+        scopeType: ScopeType.ORGANIZATION,
+        scopeId: organization.id,
         isActive: false,
         readOnly: false,
+        createdBy: savedUser.id as unknown as User, // optional if needed
       });
-      await queryRunner.manager.save(userOrganization);
-      // Save UserOrganizationBranch
+      await queryRunner.manager.save(orgPermission);
+
+      // Save Permission for Organization Branch
       if (organizationBranch) {
-        const userOrganizationBranch = queryRunner.manager.create(UserOrganizationBranch, {
-          user: savedUser,
-          organization,
-          organizationBranch,
+        const branchPermission = queryRunner.manager.create(Permission, {
+          subjectType: SubjectType.USER,
+          subjectId: savedUser.id,
+          scopeType: ScopeType.BRANCH,
+          scopeId: organizationBranch.id,
           isActive: true,
           readOnly: false,
+          createdBy: savedUser.id as unknown as User, // optional if needed
         });
-        await queryRunner.manager.save(userOrganizationBranch);
+        await queryRunner.manager.save(branchPermission);
       }
 
       await queryRunner.manager.save(userPersonalInfo);

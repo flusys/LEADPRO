@@ -53,7 +53,7 @@ export class ExpenseService extends ApiService<ExpenseDto, IExpense, Expense, Re
     return expense;
   }
 
-  override getSelectQuery(query: SelectQueryBuilder<Expense>, select?: string[]): { query: SelectQueryBuilder<Expense>, cacheKey: string, isRaw: boolean } {
+  override async getSelectQuery(query: SelectQueryBuilder<Expense>, select?: string[]) {
     if (!select || !select.length) {
       select = ['id', 'name', 'createdAt', 'deletedAt'];
     }

@@ -3,6 +3,7 @@ import { DataSource } from 'typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { envConfig } from '@flusys/flusysnest/core/config';
 import { IAppConfig } from '@flusys/flusysnest/core/interfaces';
+import { PermissionSubscriber } from '@flusys/flusysnest/persistence/event-subscriber';
 
 export const appDataSource = new DataSource({
     type: 'mysql',
@@ -18,6 +19,7 @@ export const appDataSource = new DataSource({
     migrationsRun: false,
     synchronize: false,
     namingStrategy: new SnakeNamingStrategy(),
+    subscribers: [PermissionSubscriber],
 });
 
 export const appconfig = (): IAppConfig => ({
@@ -26,6 +28,5 @@ export const appconfig = (): IAppConfig => ({
     userTokenCookieName: 'refreshToken',
     userTokenExpiredTime: 24 * 60 * 60,
     userRefreshTokenExpiredTime: 168 * 60 * 60,
-    organizationPremised: false,
     uploader: 'file',
 });
