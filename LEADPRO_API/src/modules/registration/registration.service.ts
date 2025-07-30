@@ -81,6 +81,7 @@ export class RegistrationService {
       photoObjectArray = photoObjectArray.map((item): IGallery => ({
         ...item,
         isPrivate: true,
+        organization: organization,
         type: FileTypes.IMAGE
       }));
 
