@@ -20,7 +20,7 @@ async function bootstrap() {
 
   // Seed Package Data;
   const dataSource = app.get(DataSource);
-  // await seedData(dataSource, 'Lead Pro', 'lead_pro');
+  // await seedData(dataSource);
   //  await seedMenuV1Data(dataSource);
 
   app.enableCors({
