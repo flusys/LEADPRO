@@ -5,9 +5,8 @@ export const environment = {
   organizationReferCode: 'lead_pro',
   checkUserLoginEndPoint: '/check-login',
   refreshTokenEndpoint: '/refresh',
-
   appLoginUrl: '/auth/login',
-
+  permissionGroupSlugs: 'main_dashboard',
   localStorageSelectedOrganizationIdKey: 'organizationId',
   localStorageSelectedOrganizationBranchIdKey: 'organizationBranchId',
 };
