@@ -66,19 +66,16 @@ export class CreateCash {
     }
 
     let data = this.cashFormService.formGroup.value;
-    console.warn(data)
-
-
-    // (this.model ? this.cashApiService.update(data) : this.cashApiService.insert(data)).pipe(take(1)).subscribe((res) => {
-    //   if (res.success) {
-    //     this.messageService.add({ key: 'tst', severity: 'success', summary: 'Success!', detail: res.message });
-    //     this.cashFormService.patchValue({ ...res.result });
-    //     this.cashStateService.reset();
-    //     this.clearInputForm()
-    //   } else {
-    //     return this.messageService.add({ key: 'tst', severity: 'warn', summary: 'Sorry!', detail: res.message });
-    //   }
-    // })
+    (this.model ? this.cashApiService.update(data) : this.cashApiService.insert(data)).pipe(take(1)).subscribe((res) => {
+      if (res.success) {
+        this.messageService.add({ key: 'tst', severity: 'success', summary: 'Success!', detail: res.message });
+        this.cashFormService.patchValue({ ...res.result });
+        this.cashStateService.reset();
+        this.clearInputForm()
+      } else {
+        return this.messageService.add({ key: 'tst', severity: 'warn', summary: 'Sorry!', detail: res.message });
+      }
+    })
   }
 
   getControl(name: string) {
