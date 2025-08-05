@@ -15,6 +15,7 @@ const menus: Array<IMenu> = [
     ...menu,
     readOnly: false,
     isActive: true,
+    groups: ['main_dashboard'],
     createdBy: developerId,
 })) as unknown as Array<IMenu>;
 
