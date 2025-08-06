@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { BadRequestException, ConflictException, Inject, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, QueryFailedError, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -17,9 +17,13 @@ import { IProfileInfo } from './interfaces/profile-info-data.interface';
 import { ProfileInfoDto } from './dtos/profile-info.dto';
 import { UploadService } from '@flusys/flusysnest/modules/gallery/apis';
 import { UtilsService } from '@flusys/flusysnest/shared/modules';
+import { envConfig } from '@flusys/flusysnest/core/config';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class RegistrationService {
+  private env = envConfig.getCacheConfig('user');
   private readonly logger = new Logger(RegistrationService.name);
   constructor(
     @InjectRepository(User)
@@ -30,12 +34,17 @@ export class RegistrationService {
     private readonly userPersonalInfoRepository: Repository<UserPersonalInfo>,
     private utilsService: UtilsService,
     private uploadService: UploadService,
-    private dataSource: DataSource
+    private dataSource: DataSource,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {
   }
 
 
   async registerUser(photoObjectArray: any[], userRegister: RegistrationDto): Promise<IResponsePayload<IUser>> {
+    await this.cacheManager.set(this.env.PREVIOUS_KEY_FOR_ALL, null);
+    await this.cacheManager.set(this.env.PREVIOUS_DATA_FOR_ALL, null);
+    await this.cacheManager.set(this.env.PREVIOUS_TOTAL_DATA_FOR_ALL, null);
+    
     const queryRunner = this.userRepository.manager.connection.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
