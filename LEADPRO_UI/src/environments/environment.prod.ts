@@ -3,10 +3,7 @@ export const environment = {
 
   apiBaseUrl: 'https://apiadmin.leadprobd.com',
   organizationReferCode: 'lead_pro',
-  checkUserLoginEndPoint: '/check-login',
-  refreshTokenEndpoint: '/refresh',
-  appLoginUrl: '/auth/login',
-  permissionGroupSlugs: 'main_dashboard',
-  localStorageSelectedOrganizationIdKey: 'organizationId',
-  localStorageSelectedOrganizationBranchIdKey: 'organizationBranchId',
+  permissionGroupSlugs: '',
+  lsOrgKey: 'organizationId',
+  lsBranchKey: 'organizationBranchId',
 };

@@ -32,7 +32,8 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/@flusys/flusysng/assets/style.scss"
             ],
             "server": "src/main.server.ts",
             "outputMode": "server",
@@ -102,7 +103,8 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/@flusys/flusysng/assets/style.scss"
             ]
           }
         }

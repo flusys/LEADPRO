@@ -24,7 +24,6 @@ export const appDataSource = new DataSource({
 
 export const appconfig = (): IAppConfig => ({
     userJwtSecret: 'project2025',
-    cookieDomainName: envConfig.getCookieDomainName(),
     userTokenCookieName: 'refreshToken',
     userTokenExpiredTime: 24 * 60 * 60,
     userRefreshTokenExpiredTime: 168 * 60 * 60,
