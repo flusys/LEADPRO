@@ -4,7 +4,7 @@ import { authGuard } from '@flusys/flusysng/core/guards';
 
 const moduleRoutes: Routes = [
   {
-    path: 'accounts',
+    path: 'account',
     canActivate: [authGuard],
     loadComponent: () =>
       import('@flusys/flusysng/layout/components').then((com) => com.AppLayout),

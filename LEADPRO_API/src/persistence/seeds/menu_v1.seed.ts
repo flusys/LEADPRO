@@ -35,7 +35,7 @@ const menus: Array<IMenu> = [
   ...menu,
   readOnly: false,
   isActive: true,
-  groups: ['accounts'],
+  groups: ['account'],
   createdBy: developerId,
 })) as unknown as Array<IMenu>;
 
@@ -43,9 +43,9 @@ const app = {
   isActive: true,
   id: menuIds[2],
   iconType: IconTypeEnum.IMAGE_FILE_LINK,
-  icon: 'https://cdn-icons-png.flaticon.com/512/1570/1570887.png',
-  name: 'Accounts',
-  slug: 'accounts',
+  icon: 'https://cdn-icons-png.freepik.com/256/10789/10789141.png?semt=ais_white_label',
+  name: 'Account',
+  slug: 'account',
 } as unknown as IApp;
 
 export async function seedMenuV1Data(dataSource: DataSource): Promise<void> {
