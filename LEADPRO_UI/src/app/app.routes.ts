@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+import { Route, Routes } from '@angular/router';
 import { LIB_ROUTERS } from '@flusys/flusysng/core/routes';
 import { authGuard } from '@flusys/flusysng/core/guards';
 
@@ -13,11 +13,6 @@ const moduleRoutes: Routes = [
         path: '',
         loadComponent: () =>
           import('./pages/dashboard/dashboard').then((com) => com.Dashboard),
-      },
-      {
-        path: 'profile',
-        loadComponent: () =>
-          import('./pages/profile/profile').then((com) => com.Profile),
       },
       {
         path: 'cash',
@@ -40,4 +35,15 @@ const authRoutes: Routes = [
       import('./pages/register/register').then((com) => com.Register),
   },
 ];
-export const routes: Routes = [...LIB_ROUTERS(authRoutes, [], [], moduleRoutes)];
+
+const publicRoutes: Routes = [
+  {
+    path: 'profile',
+    loadComponent: () =>
+      import('./pages/profile/profile').then((com) => com.Profile),
+  },
+];
+
+export const routes: Routes = [
+  ...LIB_ROUTERS(authRoutes, [], publicRoutes, moduleRoutes),
+];
