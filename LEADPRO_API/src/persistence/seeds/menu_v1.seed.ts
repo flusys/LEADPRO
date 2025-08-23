@@ -10,7 +10,7 @@ const menus: Array<IMenu> = [
   {
     id: menuIds[0],
     name: 'FINANCE',
-    routerLink: '/accounts/finance',
+    routerLink: '/finance',
     icon: 'pi pi-wallet',
     serial: 15,
     parent: null,
@@ -18,7 +18,7 @@ const menus: Array<IMenu> = [
   {
     id: menuIds[1],
     name: 'Cash',
-    routerLink: '/accounts/cash',
+    routerLink: '/cash',
     icon: 'pi pi-chart-line',
     serial: 16,
     parent: { id: menuIds[0] },
@@ -26,7 +26,7 @@ const menus: Array<IMenu> = [
   {
     id: menuIds[2],
     name: 'Expense',
-    routerLink: '/accounts/expense',
+    routerLink: '/expense',
     icon: 'pi pi-directions-alt',
     serial: 17,
     parent: { id: menuIds[0] },
