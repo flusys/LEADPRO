@@ -43,7 +43,7 @@ const app = {
   isActive: true,
   id: menuIds[2],
   iconType: IconTypeEnum.IMAGE_FILE_LINK,
-  icon: 'https://cdn-icons-png.flaticon.com/512/9503/9503519.png',
+  icon: 'https://cdn-icons-png.flaticon.com/512/1570/1570887.png',
   name: 'Accounts',
   slug: 'accounts',
 } as unknown as IApp;
