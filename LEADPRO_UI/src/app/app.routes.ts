@@ -2,9 +2,9 @@ import { Routes } from '@angular/router';
 import { LIB_ROUTERS } from '@flusys/flusysng/core/routes';
 import { authGuard } from '@flusys/flusysng/core/guards';
 
-const baseRoutes: Routes = [
+const moduleRoutes: Routes = [
   {
-    path: 'package',
+    path: 'accounts',
     canActivate: [authGuard],
     loadComponent: () =>
       import('@flusys/flusysng/layout/components').then((com) => com.AppLayout),
@@ -40,4 +40,4 @@ const authRoutes: Routes = [
       import('./pages/register/register').then((com) => com.Register),
   },
 ];
-export const routes: Routes = [...LIB_ROUTERS(authRoutes, [], [], [])];
+export const routes: Routes = [...LIB_ROUTERS(authRoutes, [], [], moduleRoutes)];
