@@ -14,12 +14,4 @@ import { PublicKey } from '../../modules/encryption/components/public-key/public
 export class Encryption {
   encService = inject(EncryptionService);
   passwordService = inject(PasswordService);
-
-  async ngOnInit() {
-    try {
-      // await this.encService.loadPublicKey("");
-    } catch (error) {
-      console.error('Error loading public key:', error);
-    }
-  }
 }

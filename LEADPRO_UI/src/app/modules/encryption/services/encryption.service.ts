@@ -28,8 +28,6 @@ export class EncryptionService {
       keyPair.publicKey as CryptoKey,
       false
     );
-
-    this.downloadPEMKey(publicKey, `${fileName}_public_key.pem`);
     this.downloadPEMKey(
       await this.exportKeyToPEM(keyPair.privateKey as CryptoKey, true),
       `${fileName}_private_key.pem`
