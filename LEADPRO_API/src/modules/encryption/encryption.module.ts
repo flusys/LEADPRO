@@ -4,6 +4,7 @@ import { EncryptionDataService, EncryptionKeyService } from './encryption.servic
 import { EncryptionDataController, EncryptionKeyController } from './encryption.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EncryptionData, EncryptionKey } from './encryption.entity';
+import { EmailModule } from '@flusys/flusysnest/shared/modules';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { EncryptionData, EncryptionKey } from './encryption.entity';
       EncryptionKey,
       EncryptionData
     ]),
+    EmailModule
   ],
   providers: [EncryptionKeyService,EncryptionDataService],
   controllers: [EncryptionKeyController,EncryptionDataController],

@@ -92,9 +92,9 @@ export class PasswordService {
   }
 
   // Generate a secure download token
-  getDownloadToken(): Observable<{ token: string; expires: number }> {
-    return this.http.get<{ token: string; expires: number }>(
-      `${this.apiUrl}/download-token`
+  getDownloadToken(key_id:string): Observable<string> {
+    return this.http.get<string>(
+      `${this.apiUrl}/download-token/${key_id}`
     );
   }
 

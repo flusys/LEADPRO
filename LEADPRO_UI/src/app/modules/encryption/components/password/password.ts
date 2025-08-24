@@ -1,4 +1,4 @@
-import { Component, inject, effect, signal } from '@angular/core';
+import { Component, inject, effect, signal, untracked } from '@angular/core';
 import { IPassword } from '../../interfaces/password.interface';
 import { PasswordService } from '../../services/password.service';
 import { ToolbarModule } from 'primeng/toolbar';
@@ -32,6 +32,7 @@ export class Password {
   searchTerm = signal('');
   filteredPasswords = signal<(IPassword & { id: string })[]>([]);
 
+  selectedPublicKeyId = signal<string>('');
   constructor() {
     effect(() => {
       const term = this.searchTerm().trim().toLowerCase();
@@ -63,15 +64,18 @@ export class Password {
 
     effect(() => {
       const selectedPublicKey = this.encryptionService.selectedKeyInfo();
-      if (selectedPublicKey && selectedPublicKey.id) {
-        this.loadPasswords(selectedPublicKey.id);
-      }
+      untracked(() => {
+        if (selectedPublicKey && selectedPublicKey.id) {
+          this.selectedPublicKeyId.set(selectedPublicKey.id);
+          this.loadPasswords();
+        }
+      });
     });
   }
 
-  loadPasswords(keyId: string) {
+  loadPasswords() {
     this.passwordService
-      .getAll(keyId)
+      .getAll(this.selectedPublicKeyId())
       .pipe(take(1))
       .subscribe((res) => {
         if (res.success) this.passwords.set(res.result);
@@ -167,10 +171,7 @@ export class Password {
   }
 
   afterMutation() {
-    const selectedPublicKey = this.encryptionService.selectedKeyInfo();
-    if (selectedPublicKey && selectedPublicKey.id) {
-      this.loadPasswords(selectedPublicKey.id);
-    }
+    this.loadPasswords();
     this.passwordDialog = false;
     this.deleteDialog = false;
     this.password = this.initPassword();
@@ -206,20 +207,14 @@ export class Password {
       });
   }
 
-  // download() {
-  //   this.passwordService.getDownloadToken().subscribe(({ token }) => {
-  //     this.passwordService.downloadPasswords(token).subscribe((blob) => {
-  //       const url = window.URL.createObjectURL(blob);
-  //       const a = document.createElement('a');
-  //       a.href = url;
-  //       a.download = 'passwords.json';
-  //       document.body.appendChild(a);
-  //       a.click();
-  //       document.body.removeChild(a);
-  //       window.URL.revokeObjectURL(url);
-  //     });
-  //   });
-  // }
+  download() {
+    this.passwordService
+      .getDownloadToken(this.selectedPublicKeyId())
+      .pipe(take(1))
+      .subscribe((res) => {
+        this.showMessage('success', 'Success', res);
+      });
+  }
 
   onJsonFileSelected(event: FileUploadHandlerEvent) {
     const file = event.files[0];
