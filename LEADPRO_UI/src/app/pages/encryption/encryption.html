@@ -1,0 +1,10 @@
+@defer (on viewport) {
+@if(encService.rsaPrivateKey()){
+<app-password />
+}@else{
+<app-import-pem />
+}
+
+ } @placeholder {
+<p>Component Load on View Port</p>
+}

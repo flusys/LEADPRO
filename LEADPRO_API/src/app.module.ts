@@ -14,6 +14,7 @@ import { RegistrationModule } from './modules/registration/registration.module';
 import { CashModule } from './modules/cash/cash.module';
 import { ExpenseModule } from './modules/expense/expense.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { EncryptionModule } from './modules/encryption/encryption.module';
 
 @Module({
   imports: [
@@ -36,7 +37,8 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
     
     CashModule,
     ExpenseModule,
-    DashboardModule
+    DashboardModule,
+    EncryptionModule
   ],
   controllers: [AppController],
   providers: [AppService, JwtService,

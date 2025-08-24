@@ -10,6 +10,7 @@ import { instance } from './winston.logger';
 import { TransformResponseInterceptor } from '@flusys/flusysnest/shared/interceptors';
 import { seedData } from '@flusys/flusysnest/core/data';
 import { seedMenuV1Data } from './persistence/seeds/menu_v1.seed';
+import { seedMenuV2Data } from './persistence/seeds/menu_v2.seed';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -22,6 +23,7 @@ async function bootstrap() {
   const dataSource = app.get(DataSource);
   // await seedData(dataSource);
   //  await seedMenuV1Data(dataSource);
+  //  await seedMenuV2Data(dataSource);
 
   app.enableCors({
     origin: envConfig.getOrigins(),

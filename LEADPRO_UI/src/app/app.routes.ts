@@ -26,6 +26,24 @@ const moduleRoutes: Routes = [
       },
     ],
   },
+  {
+    path: 'encryption',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('@flusys/flusysng/layout/components').then((com) => com.AppLayout),
+    loadChildren: () => [
+      {
+        path: 'password',
+        loadComponent: () =>
+          import('./pages/encryption/encryption').then((com) => com.Encryption),
+      },
+      {
+        path: '',
+        redirectTo: 'password',
+        pathMatch: 'full',
+      },
+    ],
+  },
 ];
 
 const authRoutes: Routes = [

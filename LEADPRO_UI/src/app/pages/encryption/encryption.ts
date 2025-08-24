@@ -1,0 +1,24 @@
+import { Component, inject } from '@angular/core';
+import { ImportPem } from '../../modules/encryption/components/import-pem/import-pem';
+import { EncryptionService } from '../../modules/encryption/services/encryption.service';
+import { PasswordService } from '../../modules/encryption/services/password.service';
+import { Password } from '../../modules/encryption/components/password/password';
+
+@Component({
+  selector: 'app-encryption',
+  imports: [Password, ImportPem],
+  templateUrl: './encryption.html',
+  styleUrl: './encryption.scss',
+})
+export class Encryption {
+  encService = inject(EncryptionService);
+  passwordService = inject(PasswordService);
+
+  async ngOnInit() {
+    try {
+      await this.encService.loadPublicKey();
+    } catch (error) {
+      console.error('Error loading public key:', error);
+    }
+  }
+}

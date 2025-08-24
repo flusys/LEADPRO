@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { UtilsService } from '@flusys/flusysnest/shared/modules';
 import { ApiService } from '@flusys/flusysnest/shared/apis';
-import { FilterAndPaginationDto } from '@flusys/flusysnest/shared/dtos';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { ExpenseDto } from './expense.dto';
 import { Expense } from './expense.entity';
