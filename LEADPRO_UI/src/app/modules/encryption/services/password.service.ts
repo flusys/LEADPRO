@@ -4,7 +4,7 @@ import { EncryptionService } from './encryption.service';
 import { IEncryptionData } from '../interfaces/encrypted.interfaces';
 import { HttpClient } from '@angular/common/http';
 import { Observable, from, of, throwError } from 'rxjs';
-import { switchMap, map } from 'rxjs/operators';
+import { switchMap, map, filter } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { IResponsePayload } from '@flusys/flusysng/shared/interfaces';
 
@@ -23,7 +23,16 @@ export class PasswordService {
   ): Observable<IResponsePayload<IEncryptionData[]>> {
     return this.http.post<IResponsePayload<IEncryptionData[]>>(
       this.apiUrl + '/get-all',
-      {}
+      {
+        filter: { key_id: selectedKeyId },
+        select: [
+          'id',
+          'key',
+          'storedEncryptionData',
+          'storedIV',
+          'storedEncryptionAESKey',
+        ],
+      }
     );
   }
 

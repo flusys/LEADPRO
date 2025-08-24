@@ -94,7 +94,41 @@ export class EncryptionDataService extends ApiService<
       EncryptionDataService.name,
     );
   }
-  
+
+  override async getSelectQuery(
+    query: SelectQueryBuilder<EncryptionData>,
+    select?: string[],
+  ) {
+    if (!select || !select.length) {
+      select = [
+        'id',
+        'key',
+        'storedEncryptionData',
+        'storedIV',
+        'storedEncryptionAESKey',
+      ];
+    }
+    const selectFields = select.map((field) => `${this.entityName}.${field}`);
+    selectFields.push('key.name');
+    selectFields.push('key.id');
+    query.leftJoinAndSelect('encrypted_data.key', 'key');
+    query.select(selectFields);
+    return { query, isRaw: false };
+  }
+  override async getFilterQuery(
+    query: SelectQueryBuilder<EncryptionData>,
+    filter: { [key: string]: any },
+  ): Promise<{ query: SelectQueryBuilder<EncryptionData>; isRaw: boolean }> {
+    Object.entries(filter).forEach(([key, value]) => {
+      if (key == 'key_id') {
+        query.andWhere(`key.id = :value`, { value });
+      } else {
+        query.andWhere(`${this.entityName}.${key} = :value`, { value });
+      }
+    });
+    return { query, isRaw: false };
+  }
+
   override async convertSingleDtoToEntity(
     dto: EncryptionDataDto,
   ): Promise<EncryptionData> {
@@ -122,5 +156,4 @@ export class EncryptionDataService extends ApiService<
     }
     return key;
   }
-
 }
