@@ -1,6 +1,13 @@
-export interface IEncryptedPassword {
+export interface IEncryptionData {
     id: string;
-    storedEncryptedData: string;
+    key: string;
+    storedEncryptionData: string;
     storedIV: string;
-    storedEncryptedAESKey: string;
+    storedEncryptionAESKey: string;
+}
+
+export interface IEncryptionKey {
+  id?: string;
+  name: string;
+  publicKey: string; 
 }

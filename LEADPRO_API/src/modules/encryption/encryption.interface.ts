@@ -6,6 +6,8 @@ export interface IEncryptionData {
 }
 
 export interface IEncryptionKey {
+  id: string;
+  name: string;
   user: string;
   publicKey: string; 
 }

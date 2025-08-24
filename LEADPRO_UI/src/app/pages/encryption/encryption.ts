@@ -3,10 +3,11 @@ import { ImportPem } from '../../modules/encryption/components/import-pem/import
 import { EncryptionService } from '../../modules/encryption/services/encryption.service';
 import { PasswordService } from '../../modules/encryption/services/password.service';
 import { Password } from '../../modules/encryption/components/password/password';
+import { PublicKey } from '../../modules/encryption/components/public-key/public-key';
 
 @Component({
   selector: 'app-encryption',
-  imports: [Password, ImportPem],
+  imports: [Password, ImportPem,PublicKey],
   templateUrl: './encryption.html',
   styleUrl: './encryption.scss',
 })
@@ -16,7 +17,7 @@ export class Encryption {
 
   async ngOnInit() {
     try {
-      await this.encService.loadPublicKey();
+      // await this.encService.loadPublicKey("");
     } catch (error) {
       console.error('Error loading public key:', error);
     }

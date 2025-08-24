@@ -1,40 +1,40 @@
-<div class="flex items-center justify-center h-screen w-full bg-gray-50 p-6">
-  <div class="bg-white rounded-lg shadow-lg p-8 max-w-4xl w-full flex flex-col md:flex-row gap-8">
+<div
+  class="bg-white rounded-lg shadow-lg p-8 max-w-4xl w-full flex flex-col md:flex-row gap-8"
+>
+  <div
+    class="flex flex-col items-center md:items-start w-full md:w-1/3 space-y-4"
+  >
+    <h2 class="text-2xl font-semibold text-gray-700">Upload PEM File</h2>
+    <p-fileUpload
+      name="pemFile"
+      accept=".pem"
+      chooseLabel="Choose PEM File"
+      customUpload="true"
+      (uploadHandler)="onFileSelected($event)"
+      [auto]="true"
+      [showUploadButton]="false"
+      [showCancelButton]="false"
+      [maxFileSize]="5000000"
+      styleClass="border-none w-full"
+      mode="basic"
+    ></p-fileUpload>
+  </div>
 
-    <div class="flex flex-col items-center md:items-start w-full md:w-1/3 space-y-4">
-      <h2 class="text-2xl font-semibold text-gray-700">Upload PEM File</h2>
-      <p-fileUpload
-        name="pemFile"
-        accept=".pem"
-        chooseLabel="Choose PEM File"
-        customUpload="true"
-        (uploadHandler)="onFileSelected($event)"
-        [auto]="true"
-        [showUploadButton]="false"
-        [showCancelButton]="false"
-        [maxFileSize]="5000000"
-        styleClass="border-none w-full"
-        mode="basic"
-      ></p-fileUpload>
-    </div>
+  <div class="flex flex-col w-full md:w-2/3 space-y-4">
+    <h2 class="text-2xl font-semibold text-gray-700">Or Paste PEM Key</h2>
+    <textarea
+      [(ngModel)]="manualPem"
+      rows="10"
+      placeholder="Paste your PEM key here"
+      class="w-full p-4 border border-gray-300 rounded-lg text-gray-800 font-mono resize-none placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+    ></textarea>
 
-    <div class="flex flex-col w-full md:w-2/3 space-y-4">
-      <h2 class="text-2xl font-semibold text-gray-700">Or Paste PEM Key</h2>
-      <textarea
-        [(ngModel)]="manualPem"
-        rows="10"
-        placeholder="Paste your PEM key here"
-        class="w-full p-4 border border-gray-300 rounded-lg text-gray-800 font-mono resize-none placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-      ></textarea>
-
-      <button
-        pButton
-        type="button"
-        label="Submit PEM Key"
-        (click)="onSubmitPem()"
-        class="self-end bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg px-6 py-3 transition duration-300"
-      ></button>
-    </div>
-
+    <button
+      pButton
+      type="button"
+      label="Submit PEM Key"
+      (click)="onSubmitPem()"
+      class="self-end bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg px-6 py-3 transition duration-300"
+    ></button>
   </div>
 </div>

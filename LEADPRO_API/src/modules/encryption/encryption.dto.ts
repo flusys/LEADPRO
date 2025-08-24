@@ -9,6 +9,11 @@ export class EncryptionKeyDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
+  name: string;
+  
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
   publicKey: string;
 }
 

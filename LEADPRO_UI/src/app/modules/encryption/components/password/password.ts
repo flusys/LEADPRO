@@ -1,38 +1,24 @@
-import { Component, inject, effect, signal, computed } from '@angular/core';
+import { Component, inject, effect, signal } from '@angular/core';
 import { IPassword } from '../../interfaces/password.interface';
 import { PasswordService } from '../../services/password.service';
-import { TableModule } from 'primeng/table';
 import { ToolbarModule } from 'primeng/toolbar';
-import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { InputTextModule } from 'primeng/inputtext';
-import { FormsModule } from '@angular/forms';
-import { TextareaModule } from 'primeng/textarea';
 import { MessageService } from 'primeng/api';
 import { concatMap, take } from 'rxjs/operators';
-import { IEncryptedPassword } from '../../interfaces/encrypted.interfaces';
-import { CommonModule } from '@angular/common';
+import { IEncryptionData } from '../../interfaces/encrypted.interfaces';
 import { from } from 'rxjs';
-import { FileUploadHandlerEvent, FileUploadModule } from 'primeng/fileupload';
+import { FileUploadHandlerEvent } from 'primeng/fileupload';
+import { AngularModule, PrimeModule } from '@flusys/flusysng/shared/modules';
+import { EncryptionService } from '../../services/encryption.service';
 
 @Component({
   selector: 'app-password',
-  imports: [
-    FormsModule,
-    TableModule,
-    ToolbarModule,
-    ButtonModule,
-    DialogModule,
-    InputTextModule,
-    TextareaModule,
-    CommonModule,
-    FileUploadModule,
-  ],
+  imports: [AngularModule, PrimeModule, ToolbarModule, DialogModule],
   templateUrl: './password.html',
   styleUrl: './password.scss',
 })
 export class Password {
-  passwords = signal<IEncryptedPassword[]>([]);
+  passwords = signal<IEncryptionData[]>([]);
   passwordDialog = false;
   deleteDialog = false;
 
@@ -40,6 +26,7 @@ export class Password {
   selectedId = signal<string | null>(null);
 
   private passwordService = inject(PasswordService);
+  private encryptionService = inject(EncryptionService);
   private messageService = inject(MessageService);
 
   searchTerm = signal('');
@@ -73,18 +60,22 @@ export class Password {
         }
       });
     });
+
+    effect(() => {
+      const selectedPublicKey = this.encryptionService.selectedKeyInfo();
+      if (selectedPublicKey && selectedPublicKey.id) {
+        this.loadPasswords(selectedPublicKey.id);
+      }
+    });
   }
 
-  ngOnInit() {
-    this.loadPasswords();
-  }
-
-  loadPasswords() {
+  loadPasswords(keyId: string) {
     this.passwordService
-      .getAll()
+      .getAll(keyId)
       .pipe(take(1))
-      .subscribe((list) => {
-        this.passwords.set(list);
+      .subscribe((res) => {
+        if (res.success) this.passwords.set(res.result);
+        else this.passwords.set([]);
       });
   }
 
@@ -176,7 +167,10 @@ export class Password {
   }
 
   afterMutation() {
-    this.loadPasswords();
+    const selectedPublicKey = this.encryptionService.selectedKeyInfo();
+    if (selectedPublicKey && selectedPublicKey.id) {
+      this.loadPasswords(selectedPublicKey.id);
+    }
     this.passwordDialog = false;
     this.deleteDialog = false;
     this.password = this.initPassword();
@@ -184,6 +178,7 @@ export class Password {
 
   showMessage(severity: string, summary: string, detail: string) {
     this.messageService.add({
+      key: 'tst',
       severity,
       summary,
       detail,
@@ -211,20 +206,20 @@ export class Password {
       });
   }
 
-  download() {
-    this.passwordService.getDownloadToken().subscribe(({ token }) => {
-      this.passwordService.downloadPasswords(token).subscribe((blob) => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'passwords.json';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-      });
-    });
-  }
+  // download() {
+  //   this.passwordService.getDownloadToken().subscribe(({ token }) => {
+  //     this.passwordService.downloadPasswords(token).subscribe((blob) => {
+  //       const url = window.URL.createObjectURL(blob);
+  //       const a = document.createElement('a');
+  //       a.href = url;
+  //       a.download = 'passwords.json';
+  //       document.body.appendChild(a);
+  //       a.click();
+  //       document.body.removeChild(a);
+  //       window.URL.revokeObjectURL(url);
+  //     });
+  //   });
+  // }
 
   onJsonFileSelected(event: FileUploadHandlerEvent) {
     const file = event.files[0];

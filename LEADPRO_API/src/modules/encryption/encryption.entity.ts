@@ -3,6 +3,9 @@ import { Entity, Column, JoinColumn, ManyToOne } from 'typeorm';
 
 @Entity()
 export class EncryptionKey extends Identity {
+  @Column({ type: 'text', nullable: false })
+  name: string;
+
   @ManyToOne(() => User, { nullable: false, eager: true })
   @JoinColumn({ name: 'user_id' })
   user: User;

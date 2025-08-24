@@ -1,10 +1,25 @@
 @defer (on viewport) {
-@if(encService.rsaPrivateKey()){
-<app-password />
-}@else{
-<app-import-pem />
-}
+<app-public-key />
 
- } @placeholder {
-<p>Component Load on View Port</p>
+<br />
+@if (encService.selectedKeyInfo()) {
+<div class="text-center my-3">
+  Select Key : <strong>{{ encService.selectedKeyInfo()?.name }}</strong>
+</div>
+@if (encService.rsaPublicKey()) { @if (encService.rsaPrivateKey()) {
+<app-password />
+} @else {
+<app-import-pem />
+} } @else {
+<h1 class="text-center text-lg font-semibold text-gray-600">
+  Select public key.
+</h1>
+} }@else {
+<h1 class="text-center text-lg font-semibold text-gray-600">
+  No Public Key Found
+</h1>
+} } @placeholder {
+<p class="text-center text-sm text-gray-500">
+  Component loading on viewport...
+</p>
 }
