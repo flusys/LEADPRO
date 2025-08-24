@@ -212,7 +212,7 @@ export class Password {
       .getDownloadToken(this.selectedPublicKeyId())
       .pipe(take(1))
       .subscribe((res) => {
-        this.showMessage('success', 'Success', res);
+        this.showMessage('success', 'Success', res.message);
       });
   }
 
