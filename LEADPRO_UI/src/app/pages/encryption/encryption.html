@@ -9,7 +9,7 @@
 @if (encService.rsaPublicKey()) { @if (encService.rsaPrivateKey()) {
 <app-password />
 } @else {
-<app-import-pem />
+<app-import-pem class="w-full flex justify-center"/>
 } } @else {
 <h1 class="text-center text-lg font-semibold text-gray-600">
   Select public key.
