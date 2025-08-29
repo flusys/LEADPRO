@@ -93,6 +93,7 @@ export class Password {
   }
 
   openNew() {
+    this.selectedId.set('');
     this.password = this.initPassword();
     this.passwordDialog = true;
   }
