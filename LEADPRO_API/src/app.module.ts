@@ -8,8 +8,13 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AppRoutingModule } from './app-routing.module';
-import { SettingsModule, CompanyModule, AuthModule, GalleryModule } from '@flusys/flusysnest/pages';
+import { AuthModule, AccessModule } from '@flusys/flusysnest/pages';
 import { appconfig, appDataSource } from './app.config';
+import { RegistrationModule } from './modules/registration/registration.module';
+import { CashModule } from './modules/cash/cash.module';
+import { ExpenseModule } from './modules/expense/expense.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { EncryptionModule } from './modules/encryption/encryption.module';
 
 @Module({
   imports: [
@@ -24,12 +29,16 @@ import { appconfig, appDataSource } from './app.config';
     }),
 
     TypeOrmModule.forRoot(appDataSource.options),
+    RegistrationModule,
+    
     AppRoutingModule,
-
     AuthModule,
-    SettingsModule,
-    CompanyModule,
-    GalleryModule,
+    AccessModule,
+    
+    CashModule,
+    ExpenseModule,
+    DashboardModule,
+    EncryptionModule
   ],
   controllers: [AppController],
   providers: [AppService, JwtService,

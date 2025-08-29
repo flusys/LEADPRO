@@ -1,0 +1,38 @@
+<p-panel header="👥 User Cash Summary" [toggleable]="false" class="line-height-3 m-0">
+  <p-table
+    [value]="userCashList()"
+    dataKey="userId"
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[5, 10, 25]"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>User</th>
+        <th class="text-right">Cash Amount</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-data>
+      <tr>
+        <td>
+            <div class="flex flex-row items-center">
+            <img [alt]="data?.userName" [src]="data.userImage" [width]="35" [height]="35"
+              class="vertical-align-middle mr-2 rounded" style="width: 35px" />
+            <span class="ml-1 vertical-align-middle  {{
+              data.deletedAt ? 'text-red-600' : ''
+            }}">{{ data?.userName }}</span>
+          </div>
+        </td>
+        <td class="text-right">{{ data.cashAmount | number: '1.2-2' }}</td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="3" class="text-center">No user cash data found.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-panel>

@@ -4,22 +4,36 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 import { DataSource } from 'typeorm';
 import { AppModule } from './app.module';
-import { seedData } from '@flusys/flusysnest/shared/data';
+import { envConfig } from '@flusys/flusysnest/core/config';
+import { WinstonModule } from 'nest-winston';
+import { instance } from './winston.logger';
+import { TransformResponseInterceptor } from '@flusys/flusysnest/shared/interceptors';
+import { seedData } from '@flusys/flusysnest/core/data';
+import { seedMenuV1Data } from './persistence/seeds/menu_v1.seed';
+import { seedMenuV2Data } from './persistence/seeds/menu_v2.seed';
 
 async function bootstrap() {
-  const logger = new Logger('Bootstrap');
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: WinstonModule.createLogger({
+      instance: instance,
+    }),
+  });
 
-  //Seed Package Data;
-  // const dataSource = app.get(DataSource);
+  // Seed Package Data;
+  const dataSource = app.get(DataSource);
   // await seedData(dataSource);
+  //  await seedMenuV1Data(dataSource);
+  //  await seedMenuV2Data(dataSource);
 
   app.enableCors({
-    origin: process.env.ORIGIN?.split(','),
+    origin: envConfig.getOrigins(),
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     allowedHeaders: 'Content-Type, Authorization',
   });
+
+
+  app.useGlobalInterceptors(new TransformResponseInterceptor());
 
   // Version Control
   app.enableVersioning({
@@ -39,11 +53,11 @@ async function bootstrap() {
     .addTag('Billings')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('docs', app, document);
 
-  const port = process.env.PORT || 3000;
+  const port = envConfig.getPort() || 3000;
   await app.listen(port);
-  logger.log(`Application is running on port ${port}`);
+  console.log(`Application is running on port ${port}`);
 }
 
 bootstrap();

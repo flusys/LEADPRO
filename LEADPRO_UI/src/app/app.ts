@@ -1,27 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ToastModule } from 'primeng/toast';
-import { PrimeModule } from '@flusys/flusysng/shared/modules';
-import { ApiLoaderService } from "@flusys/flusysng/core/services";
-import { AuthenticationStateService } from '@flusys/flusysng/auth/services';
-
+import { LibAppConfigComponent } from '@flusys/flusysng/core/components';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, PrimeModule, ToastModule],
+  imports: [RouterOutlet, LibAppConfigComponent],
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  styleUrl: './app.scss',
 })
-export class App {
-  public apiLoaderService = inject(ApiLoaderService);
-  authStateService: AuthenticationStateService = inject(AuthenticationStateService);
-
-  constructor() {
-    this.authStateService.currentCompanyInfo.update((prev)=>{
-      return {
-        ...prev,
-        ...{appName:"LEADPRO"}
-      }
-    })
-  }
-}
+export class App {}

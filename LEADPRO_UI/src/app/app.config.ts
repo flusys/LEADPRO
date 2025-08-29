@@ -9,7 +9,7 @@ import {
   withCredentials,
 } from '@flusys/flusysng/core/interceptors';
 import Aura from '@primeuix/themes/aura';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { ApiLoaderService } from '@flusys/flusysng/core/services';
 import { environment } from '../environments/environment';
 import { LIB_CONFIG } from '@flusys/flusysng';
@@ -52,6 +52,7 @@ export const appConfig: ApplicationConfig = {
       }
     }),
     MessageService,
+    ConfirmationService,
     ApiLoaderService,
     { provide: LIB_CONFIG, useValue: environment },
   ]

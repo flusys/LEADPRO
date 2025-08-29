@@ -1,0 +1,8 @@
+<div class="min-h-screen bg-gray-100 p-6 flex flex-col justify-center">
+  <app-profile [id]="id()" [isEditMode]="id() ? true : false" />
+  <br />
+  <app-profile-other-information
+    [id]="id()"
+    [isEditMode]="id() ? true : false"
+  />
+</div>

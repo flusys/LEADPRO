@@ -1,13 +1,9 @@
 export const environment = {
-    production: true,
-  
-    apiBaseUrl: 'http://192.168.26.102:4000',
-    checkUserLoginEndPoint: '/check-user-login',
-  
-    appLoginUrl: 'auth/login',
-  
-    localStorageSelectedCompanyIdKey: 'companyId',
-    localStorageSelectedCompanyBranchIdKey: 'companyBranchId',
-    
-    checkCompanyOnGuard:true,
-  };
+  production: true,
+
+  apiBaseUrl: 'https://apiadmin.leadprobd.com',
+  organizationReferCode: 'lead_pro',
+  permissionGroupSlugs: '',
+  lsOrgKey: 'organizationId',
+  lsBranchKey: 'organizationBranchId',
+};
