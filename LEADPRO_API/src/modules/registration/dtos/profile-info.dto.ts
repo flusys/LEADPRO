@@ -82,8 +82,6 @@ export class ProfileInfoDto {
   @IsString()
   comments?: string;
 
-
-
   @ApiProperty({
     required: false,
     example: 'Special notes about the profile',

@@ -1,32 +1,27 @@
+import { User } from '@flusys/flusysnest/persistence/entities';
+import { ApiService, HybridCache } from '@flusys/flusysnest/shared/classes';
+import { UtilsService } from '@flusys/flusysnest/shared/modules';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
-import { UtilsService } from '@flusys/flusysnest/shared/modules';
-import { ApiService } from '@flusys/flusysnest/shared/apis';
-import { FilterAndPaginationDto } from '@flusys/flusysnest/shared/dtos';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { CashDto } from './cash.dto';
 import { Cash } from './cash.entity';
 import { ICash } from './cash.interface';
-import { Cache } from "cache-manager";
-import { User } from '@flusys/flusysnest/persistence/entities';
 
 @Injectable()
-export class CashService extends ApiService<CashDto, ICash, Cash, Repository<Cash>> {
-
+export class CashService extends ApiService<
+  CashDto,
+  ICash,
+  Cash,
+  Repository<Cash>
+> {
   constructor(
     @InjectRepository(Cash)
     protected readonly cashRepository: Repository<Cash>,
-    @Inject(CACHE_MANAGER) protected cacheManager: Cache,
+    @Inject('CACHE_INSTANCE') protected cacheManager: HybridCache,
     protected utilsService: UtilsService,
   ) {
-    super(
-      'cash',
-      cashRepository,
-      cacheManager,
-      utilsService,
-      CashService.name
-    );
+    super('cash', cashRepository, cacheManager, utilsService, CashService.name);
   }
 
   override async convertSingleDtoToEntity(dto: CashDto): Promise<Cash> {
@@ -37,7 +32,7 @@ export class CashService extends ApiService<CashDto, ICash, Cash, Repository<Cas
       });
       if (!dbData) {
         throw new NotFoundException(
-          'No such entity data found for update! Please, Try Again.'
+          'No such entity data found for update! Please, Try Again.',
         );
       }
       cash = dbData;
@@ -48,23 +43,25 @@ export class CashService extends ApiService<CashDto, ICash, Cash, Repository<Cas
       ...{
         date: new Date(),
         cashBy: { id: dto.cashById } as User,
-      }
+      },
     };
     return cash;
   }
 
-  override async getSelectQuery(query: SelectQueryBuilder<Cash>, select?: string[]) {
+  override async getSelectQuery(
+    query: SelectQueryBuilder<Cash>,
+    select?: string[],
+  ) {
     if (!select || !select.length) {
       select = ['id', 'name', 'createdAt', 'deletedAt'];
     }
-    const selectFields = select.map(field => `${this.entityName}.${field}`);
+    const selectFields = select.map((field) => `${this.entityName}.${field}`);
 
-    selectFields.push("cashBy.name");
-    selectFields.push("cashBy.id");
-    query.leftJoinAndSelect("cash.cashBy", "cashBy");
+    selectFields.push('cashBy.name');
+    selectFields.push('cashBy.id');
+    query.leftJoinAndSelect('cash.cashBy', 'cashBy');
     query.select(selectFields);
     const cacheKey = selectFields.join(',');
     return { query, cacheKey, isRaw: false };
   }
-
 }

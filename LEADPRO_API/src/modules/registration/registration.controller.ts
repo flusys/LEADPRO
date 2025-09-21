@@ -1,8 +1,16 @@
+import { UploadService } from '@flusys/flusysnest/modules/gallery/apis';
+import { IUser } from '@flusys/flusysnest/modules/settings/interfaces';
+import { User } from '@flusys/flusysnest/shared/decorators';
+import { JwtAuthGuard } from '@flusys/flusysnest/shared/guards';
+import {
+  IFileUploadResponse,
+  ILoggedUserInfo,
+  IResponsePayload,
+} from '@flusys/flusysnest/shared/interfaces';
 import {
   Body,
   Controller,
   Get,
-  Logger,
   Param,
   Post,
   Put,
@@ -16,24 +24,18 @@ import {
   Version,
   VERSION_NEUTRAL,
 } from '@nestjs/common';
-import { IResponsePayload, ILoggedUserInfo, IFileUploadResponse } from '@flusys/flusysnest/shared/interfaces';
-import { RegistrationService } from './registration.service';
-import { IUser } from '@flusys/flusysnest/modules/settings/interfaces';
-import { RegistrationDto } from './dtos/registration.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { UploadService } from '@flusys/flusysnest/modules/gallery/apis';
-import { JwtAuthGuard } from "@flusys/flusysnest/core/guards";
-import { IProfileInfo } from './interfaces/profile-info-data.interface';
-import { User } from "@flusys/flusysnest/shared/decorators";
 import { ProfileInfoDto } from './dtos/profile-info.dto';
+import { RegistrationDto } from './dtos/registration.dto';
+import { IProfileInfo } from './interfaces/profile-info-data.interface';
+import { RegistrationService } from './registration.service';
 
 @Controller('')
 export class RegistrationController {
-
-  constructor(private registrationService: RegistrationService,
+  constructor(
+    private registrationService: RegistrationService,
     private uploadService: UploadService,
-  ) {
-  }
+  ) {}
 
   @Version(VERSION_NEUTRAL)
   @Post('auth/registration')
@@ -54,21 +56,34 @@ export class RegistrationController {
       nomineeNidPhoto: Express.Multer.File[];
     },
     @Req() req,
-    @Query('folderPath') folderPath: string
+    @Query('folderPath') folderPath: string,
   ): Promise<IResponsePayload<IUser>> {
-    const photoObjectArray = [files.personalPhoto[0], files.nidPhoto[0], files.nomineeNidPhoto[0]];
-    const urls = await this.uploadService.uploadMultipleFiles(photoObjectArray, folderPath);
-    const formattedUrls = this.uploadService.makeFileResponseUrl(urls, req) as string[];
+    const photoObjectArray = [
+      files.personalPhoto[0],
+      files.nidPhoto[0],
+      files.nomineeNidPhoto[0],
+    ];
+    const urls = await this.uploadService.uploadMultipleFiles(
+      photoObjectArray,
+      folderPath,
+    );
+    const formattedUrls = this.uploadService.makeFileResponseUrl(
+      urls,
+      req,
+    ) as string[];
     const responseObject = photoObjectArray.map((file, index) => ({
       size: this.uploadService.bytesToKb(file.size),
       name: file.originalname,
       url: formattedUrls[index],
     }));
-    return await this.registrationService.registerUser(responseObject, registrationDto);
+    return await this.registrationService.registerUser(
+      responseObject,
+      registrationDto,
+    );
   }
 
   @Version(VERSION_NEUTRAL)
-  @Get("profile")
+  @Get('profile')
   @UsePipes(ValidationPipe)
   @UseGuards(JwtAuthGuard)
   async getOwnProfile(
@@ -78,19 +93,18 @@ export class RegistrationController {
   }
 
   @Version(VERSION_NEUTRAL)
-  @Get("profile/:id")
+  @Get('profile/:id')
   @UsePipes(ValidationPipe)
   @UseGuards(JwtAuthGuard)
   async getById(
-    @Param("id") id: string,
+    @Param('id') id: string,
     @User() user: ILoggedUserInfo,
   ): Promise<IResponsePayload<IProfileInfo>> {
     return await this.registrationService.findById(id, user);
   }
 
-
   @Version(VERSION_NEUTRAL)
-  @Put("profile/:id")
+  @Put('profile/:id')
   @UsePipes(ValidationPipe)
   @UseInterceptors(
     FileFieldsInterceptor([
@@ -100,7 +114,7 @@ export class RegistrationController {
   )
   @UseGuards(JwtAuthGuard)
   async updateProfile(
-    @Param("id") id: string,
+    @Param('id') id: string,
     @User() user: ILoggedUserInfo,
     @Body() registrationDto: ProfileInfoDto,
     @UploadedFiles()
@@ -109,12 +123,15 @@ export class RegistrationController {
       nomineeNidPhoto: Express.Multer.File[];
     },
     @Req() req,
-    @Query('folderPath') folderPath: string
+    @Query('folderPath') folderPath: string,
   ): Promise<IResponsePayload<null>> {
     let nidPhotoObject: IFileUploadResponse | null = null;
     let nomineeNidPhotoObject: IFileUploadResponse | null = null;
     if (files.nidPhoto) {
-      const url = await this.uploadService.uploadSingleFile(files.nidPhoto[0], folderPath);
+      const url = await this.uploadService.uploadSingleFile(
+        files.nidPhoto[0],
+        folderPath,
+      );
       nidPhotoObject = {
         size: this.uploadService.bytesToKb(files.nidPhoto[0].size),
         name: files.nidPhoto[0].originalname,
@@ -122,7 +139,10 @@ export class RegistrationController {
       };
     }
     if (files.nomineeNidPhoto) {
-      const url = await this.uploadService.uploadSingleFile(files.nomineeNidPhoto[0], folderPath);
+      const url = await this.uploadService.uploadSingleFile(
+        files.nomineeNidPhoto[0],
+        folderPath,
+      );
       nomineeNidPhotoObject = {
         size: this.uploadService.bytesToKb(files.nomineeNidPhoto[0].size),
         name: files.nomineeNidPhoto[0].originalname,
@@ -135,8 +155,7 @@ export class RegistrationController {
       user,
       registrationDto,
       nidPhotoObject,
-      nomineeNidPhotoObject
+      nomineeNidPhotoObject,
     );
   }
-
 }

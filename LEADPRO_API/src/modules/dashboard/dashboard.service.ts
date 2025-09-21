@@ -1,10 +1,10 @@
+import { ILoggedUserInfo } from '@flusys/flusysnest/shared/interfaces';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { IDashboard, IUserCashSummary } from './dashboard.interface';
-import { ILoggedUserInfo } from '@flusys/flusysnest/shared/interfaces';
 import { Cash } from '../cash/cash.entity';
 import { Expense } from '../expense/expense.entity';
+import { IDashboard, IUserCashSummary } from './dashboard.interface';
 @Injectable()
 export class DashboardService {
   constructor(
@@ -13,7 +13,7 @@ export class DashboardService {
 
     @InjectRepository(Expense)
     private readonly expenseRepository: Repository<Expense>,
-  ) { }
+  ) {}
 
   async getDashboardData(user: ILoggedUserInfo): Promise<IDashboard> {
     // ➤ Total Cash Amount
@@ -25,7 +25,11 @@ export class DashboardService {
     // ➤ Last Month Date Range
     const now = new Date();
     const firstDayOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const firstDayOfNextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    const firstDayOfNextMonth = new Date(
+      now.getFullYear(),
+      now.getMonth() + 1,
+      1,
+    );
 
     const lastMonthCashResult = await this.cashRepository
       .createQueryBuilder('cash')
@@ -63,12 +67,11 @@ export class DashboardService {
       .addGroupBy('profilePicture.url')
       .getRawMany();
 
-    return result.map(row => ({
+    return result.map((row) => ({
       userId: row.userId,
       userName: row.userName,
       userImage: row.userImage,
       cashAmount: Number(row.cashAmount),
     }));
   }
-
 }

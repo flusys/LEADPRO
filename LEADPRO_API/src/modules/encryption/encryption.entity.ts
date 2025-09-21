@@ -1,5 +1,5 @@
 import { Identity, User } from '@flusys/flusysnest/persistence/entities';
-import { Entity, Column, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 @Entity()
 export class EncryptionKey extends Identity {

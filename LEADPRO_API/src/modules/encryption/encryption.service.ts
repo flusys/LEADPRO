@@ -1,15 +1,13 @@
+import { User } from '@flusys/flusysnest/persistence/entities';
+import { ApiService, HybridCache } from '@flusys/flusysnest/shared/classes';
+import { FilterAndPaginationDto } from '@flusys/flusysnest/shared/dtos';
+import { UtilsService } from '@flusys/flusysnest/shared/modules';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
-import { ApiService } from '@flusys/flusysnest/shared/apis';
-import { EncryptionData, EncryptionKey } from './encryption.entity';
-import { UtilsService } from '@flusys/flusysnest/shared/modules';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { EncryptionDataDto, EncryptionKeyDto } from './encryption.dto';
+import { EncryptionData, EncryptionKey } from './encryption.entity';
 import { IEncryptionData, IEncryptionKey } from './encryption.interface';
-import { Cache } from 'cache-manager';
-import { User } from '@flusys/flusysnest/persistence/entities';
-import { FilterAndPaginationDto } from '@flusys/flusysnest/shared/dtos';
 
 @Injectable()
 export class EncryptionKeyService extends ApiService<
@@ -21,7 +19,7 @@ export class EncryptionKeyService extends ApiService<
   constructor(
     @InjectRepository(EncryptionKey)
     protected readonly expenseRepository: Repository<EncryptionKey>,
-    @Inject(CACHE_MANAGER) protected cacheManager: Cache,
+    @Inject('CACHE_INSTANCE') protected cacheManager: HybridCache,
     protected utilsService: UtilsService,
   ) {
     super(
@@ -83,7 +81,7 @@ export class EncryptionDataService extends ApiService<
   constructor(
     @InjectRepository(EncryptionData)
     protected readonly encryptedDataRepository: Repository<EncryptionData>,
-    @Inject(CACHE_MANAGER) protected cacheManager: Cache,
+    @Inject('CACHE_INSTANCE') protected cacheManager: HybridCache,
     protected utilsService: UtilsService,
   ) {
     super(

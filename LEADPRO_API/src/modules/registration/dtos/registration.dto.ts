@@ -26,7 +26,9 @@ export class RegistrationDto {
 
   @ApiProperty({ enum: ['Single', 'Married', 'Divorced'] })
   @IsNotEmpty()
-  @IsEnum(['Single', 'Married', 'Divorced'], { message: 'Invalid marital status' })
+  @IsEnum(['Single', 'Married', 'Divorced'], {
+    message: 'Invalid marital status',
+  })
   maritalStatus: 'Single' | 'Married' | 'Divorced';
 
   @ApiProperty()
@@ -78,7 +80,6 @@ export class RegistrationDto {
   @IsNotEmpty()
   @MinLength(6)
   confirmPassword: string;
-
 
   @ApiProperty()
   @IsNotEmpty()

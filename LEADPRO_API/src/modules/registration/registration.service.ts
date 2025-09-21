@@ -1,25 +1,42 @@
-import { BadRequestException, ConflictException, Inject, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, QueryFailedError, Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import { envConfig } from '@flusys/flusysnest/core/config';
+import { UploadService } from '@flusys/flusysnest/modules/gallery/apis';
+import { IGallery } from '@flusys/flusysnest/modules/gallery/interfaces';
+import { IUser } from '@flusys/flusysnest/modules/settings/interfaces';
+import {
+  Gallery,
+  Organization,
+  OrganizationBranch,
+  Permission,
+  User,
+} from '@flusys/flusysnest/persistence/entities';
+import {
+  FileTypes,
+  ScopeType,
+  SubjectType,
+} from '@flusys/flusysnest/shared/enums';
 import {
   IFileUploadResponse,
   ILoggedUserInfo,
-  IResponsePayload
+  IResponsePayload,
 } from '@flusys/flusysnest/shared/interfaces';
-import { Organization, OrganizationBranch, Gallery, User, Permission, } from '@flusys/flusysnest/persistence/entities';
-import { IUser } from '@flusys/flusysnest/modules/settings/interfaces';
-import { RegistrationDto } from './dtos/registration.dto';
-import { UserPersonalInfo } from './user-personal-info.entity';
-import { IGallery } from '@flusys/flusysnest/modules/gallery/interfaces';
-import { FileTypes, ScopeType, SubjectType } from '@flusys/flusysnest/shared/enums';
-import { IProfileInfo } from './interfaces/profile-info-data.interface';
-import { ProfileInfoDto } from './dtos/profile-info.dto';
-import { UploadService } from '@flusys/flusysnest/modules/gallery/apis';
 import { UtilsService } from '@flusys/flusysnest/shared/modules';
-import { envConfig } from '@flusys/flusysnest/core/config';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import {
+  BadRequestException,
+  ConflictException,
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcrypt';
 import { Cache } from 'cache-manager';
+import { DataSource, QueryFailedError, Repository } from 'typeorm';
+import { ProfileInfoDto } from './dtos/profile-info.dto';
+import { RegistrationDto } from './dtos/registration.dto';
+import { IProfileInfo } from './interfaces/profile-info-data.interface';
+import { UserPersonalInfo } from './user-personal-info.entity';
 
 @Injectable()
 export class RegistrationService {
@@ -36,21 +53,25 @@ export class RegistrationService {
     private uploadService: UploadService,
     private dataSource: DataSource,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
-  ) {
-  }
+  ) {}
 
-
-  async registerUser(photoObjectArray: any[], userRegister: RegistrationDto): Promise<IResponsePayload<IUser>> {
+  async registerUser(
+    photoObjectArray: any[],
+    userRegister: RegistrationDto,
+  ): Promise<IResponsePayload<IUser>> {
     await this.cacheManager.set(this.env.PREVIOUS_KEY_FOR_ALL, null);
     await this.cacheManager.set(this.env.PREVIOUS_DATA_FOR_ALL, null);
     await this.cacheManager.set(this.env.PREVIOUS_TOTAL_DATA_FOR_ALL, null);
-    
-    const queryRunner = this.userRepository.manager.connection.createQueryRunner();
+
+    const queryRunner =
+      this.userRepository.manager.connection.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
       // Check if email exists
-      const existingUser = await this.userRepository.findOne({ where: { email: userRegister.email } });
+      const existingUser = await this.userRepository.findOne({
+        where: { email: userRegister.email },
+      });
       if (existingUser) {
         const urls = photoObjectArray.map((item) => item.url);
         await this.uploadService.deleteMultipleFile(urls);
@@ -64,7 +85,6 @@ export class RegistrationService {
         throw new BadRequestException('Passwords do not match');
       }
 
-
       let organization: Organization | null = null;
       let organizationBranch: OrganizationBranch | null = null;
       if (!userRegister.organizationReferCode) {
@@ -73,7 +93,9 @@ export class RegistrationService {
           message: 'Please Provide Refer Organization',
         };
       }
-      organization = await queryRunner.manager.findOne(Organization, { where: { slug: userRegister.organizationReferCode } });
+      organization = await queryRunner.manager.findOne(Organization, {
+        where: { slug: userRegister.organizationReferCode },
+      });
       if (!organization) {
         await queryRunner.rollbackTransaction();
         return {
@@ -81,21 +103,27 @@ export class RegistrationService {
           message: 'Please Provide Valid Refer Id',
         };
       }
-      const allOrganizationBranches = await queryRunner.manager.find(OrganizationBranch, { where: { organization: { id: organization.id } } });
+      const allOrganizationBranches = await queryRunner.manager.find(
+        OrganizationBranch,
+        { where: { organization: { id: organization.id } } },
+      );
       if (allOrganizationBranches.length === 1) {
         organizationBranch = allOrganizationBranches[0];
       }
 
       // Mark photos as private
-      photoObjectArray = photoObjectArray.map((item): IGallery => ({
-        ...item,
-        isPrivate: true,
-        organization: organization,
-        type: FileTypes.IMAGE
-      }));
+      photoObjectArray = photoObjectArray.map(
+        (item): IGallery => ({
+          ...item,
+          isPrivate: true,
+          organization: organization,
+          type: FileTypes.IMAGE,
+        }),
+      );
 
       // Save photos
-      const savedGalleries = await this.galleryRepository.save(photoObjectArray);
+      const savedGalleries =
+        await this.galleryRepository.save(photoObjectArray);
 
       const personalPhoto = savedGalleries[0];
       const nidPhoto = savedGalleries[1];
@@ -129,7 +157,6 @@ export class RegistrationService {
         nomineeNidPhoto: nomineeNidPhoto,
         comments: userRegister.comments,
       });
-
 
       // Save Permission for Organization
       const orgPermission = queryRunner.manager.create(Permission, {
@@ -170,7 +197,10 @@ export class RegistrationService {
     } catch (error: any) {
       await queryRunner.rollbackTransaction();
       this.logger.error(error);
-      if (error instanceof QueryFailedError && error.driverError.code === '23505') {
+      if (
+        error instanceof QueryFailedError &&
+        error.driverError.code === '23505'
+      ) {
         const { columnName } = this.utilsService.extractColumnNameFromError(
           error.driverError.detail,
         );
@@ -183,8 +213,10 @@ export class RegistrationService {
     }
   }
 
-
-  async findById(userId: string, user: ILoggedUserInfo,): Promise<IResponsePayload<IProfileInfo>> {
+  async findById(
+    userId: string,
+    user: ILoggedUserInfo,
+  ): Promise<IResponsePayload<IProfileInfo>> {
     try {
       if (!userId) {
         userId = user.id;
@@ -193,32 +225,38 @@ export class RegistrationService {
         where: { user: { id: userId } },
         relations: ['user', 'nidPhoto', 'nomineeNidPhoto', 'referUser'],
       });
-      const object = userInformation ? {
-        nidPhoto: userInformation.nidPhoto ? {
-          id: userInformation.nidPhoto?.id,
-          name: userInformation.nidPhoto?.name,
-          url: userInformation.nidPhoto?.url,
-          type: userInformation.nidPhoto?.type,
-        } : null,
-        name: userInformation.user.name,
-        fatherName: userInformation.fatherName,
-        motherName: userInformation.motherName,
-        maritalStatus: userInformation.maritalStatus,
-        presentAddress: userInformation.presentAddress,
-        permanentAddress: userInformation.permanentAddress,
-        profession: userInformation.profession,
-        idNo: '', // You can extract this from somewhere else if available
-        nomineeName: userInformation.nomineeName,
-        relationWithNominee: userInformation.relationWithNominee,
-        nomineeNidPhoto: userInformation.nomineeNidPhoto ? {
-          id: userInformation.nomineeNidPhoto?.id,
-          name: userInformation.nomineeNidPhoto?.name,
-          url: userInformation.nomineeNidPhoto?.url,
-          type: userInformation.nomineeNidPhoto?.type,
-        } : null,
-        comments: userInformation.comments,
-        referUser: userInformation.referUser,
-      } : null;
+      const object = userInformation
+        ? {
+            nidPhoto: userInformation.nidPhoto
+              ? {
+                  id: userInformation.nidPhoto?.id,
+                  name: userInformation.nidPhoto?.name,
+                  url: userInformation.nidPhoto?.url,
+                  type: userInformation.nidPhoto?.type,
+                }
+              : null,
+            name: userInformation.user.name,
+            fatherName: userInformation.fatherName,
+            motherName: userInformation.motherName,
+            maritalStatus: userInformation.maritalStatus,
+            presentAddress: userInformation.presentAddress,
+            permanentAddress: userInformation.permanentAddress,
+            profession: userInformation.profession,
+            idNo: '', // You can extract this from somewhere else if available
+            nomineeName: userInformation.nomineeName,
+            relationWithNominee: userInformation.relationWithNominee,
+            nomineeNidPhoto: userInformation.nomineeNidPhoto
+              ? {
+                  id: userInformation.nomineeNidPhoto?.id,
+                  name: userInformation.nomineeNidPhoto?.name,
+                  url: userInformation.nomineeNidPhoto?.url,
+                  type: userInformation.nomineeNidPhoto?.type,
+                }
+              : null,
+            comments: userInformation.comments,
+            referUser: userInformation.referUser,
+          }
+        : null;
       return {
         success: true,
         message: 'User Found',
@@ -228,7 +266,7 @@ export class RegistrationService {
       this.logger.error(error);
       if (error instanceof QueryFailedError) {
         if (error.driverError.errno == 1062) {
-          throw new QueryFailedError("Duplicate Entry Error", [], error);
+          throw new QueryFailedError('Duplicate Entry Error', [], error);
         }
         throw new QueryFailedError(error.message, [], error);
       } else {
@@ -261,32 +299,49 @@ export class RegistrationService {
       });
 
       if (!userInformation) {
-        userInformation = queryRunner.manager.create(this.userPersonalInfoRepository.target, {
-          user: { id: userId } as any,
-          ...dto,
-        });
+        userInformation = queryRunner.manager.create(
+          this.userPersonalInfoRepository.target,
+          {
+            user: { id: userId } as any,
+            ...dto,
+          },
+        );
         if (nidPhotoObject) {
-          const gallery = queryRunner.manager.create(this.galleryRepository.target, {
-            ...nidPhotoObject,
-            isPrivate: true,
-            type: FileTypes.IMAGE,
-          } as unknown as Gallery);
-          const savedGallery = await queryRunner.manager.save(this.galleryRepository.target, gallery);
+          const gallery = queryRunner.manager.create(
+            this.galleryRepository.target,
+            {
+              ...nidPhotoObject,
+              isPrivate: true,
+              type: FileTypes.IMAGE,
+            } as unknown as Gallery,
+          );
+          const savedGallery = await queryRunner.manager.save(
+            this.galleryRepository.target,
+            gallery,
+          );
           userInformation.nidPhoto = savedGallery;
         }
         if (nomineeNidPhotoObject) {
-          const gallery = queryRunner.manager.create(this.galleryRepository.target, {
-            ...nomineeNidPhotoObject,
-            isPrivate: true,
-            type: FileTypes.IMAGE,
-          } as unknown as Gallery);
+          const gallery = queryRunner.manager.create(
+            this.galleryRepository.target,
+            {
+              ...nomineeNidPhotoObject,
+              isPrivate: true,
+              type: FileTypes.IMAGE,
+            } as unknown as Gallery,
+          );
 
-          const savedGallery = await queryRunner.manager.save(this.galleryRepository.target, gallery);
+          const savedGallery = await queryRunner.manager.save(
+            this.galleryRepository.target,
+            gallery,
+          );
           userInformation.nomineeNidPhoto = savedGallery;
         }
 
         if (dto.referUserId) {
-          const user = await this.userRepository.findOneBy({ id: dto.referUserId });
+          const user = await this.userRepository.findOneBy({
+            id: dto.referUserId,
+          });
           if (!user) {
             await queryRunner.rollbackTransaction();
             return {
@@ -312,10 +367,12 @@ export class RegistrationService {
         motherName: dto.motherName ?? userInformation.motherName,
         maritalStatus: dto.maritalStatus ?? userInformation.maritalStatus,
         presentAddress: dto.presentAddress ?? userInformation.presentAddress,
-        permanentAddress: dto.permanentAddress ?? userInformation.permanentAddress,
+        permanentAddress:
+          dto.permanentAddress ?? userInformation.permanentAddress,
         profession: dto.profession ?? userInformation.profession,
         nomineeName: dto.nomineeName ?? userInformation.nomineeName,
-        relationWithNominee: dto.relationWithNominee ?? userInformation.relationWithNominee,
+        relationWithNominee:
+          dto.relationWithNominee ?? userInformation.relationWithNominee,
         comments: dto.comments ?? userInformation.comments,
       });
 
@@ -324,12 +381,18 @@ export class RegistrationService {
         if (userInformation.nidPhoto) {
           deletedGalleryIds.push(userInformation.nidPhoto.id); // Save to delete later
         }
-        const gallery = queryRunner.manager.create(this.galleryRepository.target, {
-          ...nidPhotoObject,
-          isPrivate: true,
-          type: FileTypes.IMAGE,
-        } as unknown as Gallery);
-        const savedGallery = await queryRunner.manager.save(this.galleryRepository.target, gallery);
+        const gallery = queryRunner.manager.create(
+          this.galleryRepository.target,
+          {
+            ...nidPhotoObject,
+            isPrivate: true,
+            type: FileTypes.IMAGE,
+          } as unknown as Gallery,
+        );
+        const savedGallery = await queryRunner.manager.save(
+          this.galleryRepository.target,
+          gallery,
+        );
         userInformation.nidPhoto = savedGallery;
       }
 
@@ -338,16 +401,24 @@ export class RegistrationService {
         if (userInformation.nomineeNidPhoto) {
           deletedGalleryIds.push(userInformation.nomineeNidPhoto.id);
         }
-        const gallery = queryRunner.manager.create(this.galleryRepository.target, {
-          ...nomineeNidPhotoObject,
-          isPrivate: true,
-          type: FileTypes.IMAGE,
-        } as unknown as Gallery);
-        const savedGallery = await queryRunner.manager.save(this.galleryRepository.target, gallery);
+        const gallery = queryRunner.manager.create(
+          this.galleryRepository.target,
+          {
+            ...nomineeNidPhotoObject,
+            isPrivate: true,
+            type: FileTypes.IMAGE,
+          } as unknown as Gallery,
+        );
+        const savedGallery = await queryRunner.manager.save(
+          this.galleryRepository.target,
+          gallery,
+        );
         userInformation.nomineeNidPhoto = savedGallery;
       }
       if (dto.referUserId) {
-        const user = await this.userRepository.findOneBy({ id: dto.referUserId });
+        const user = await this.userRepository.findOneBy({
+          id: dto.referUserId,
+        });
         if (!user) {
           await queryRunner.rollbackTransaction();
           return {
@@ -387,9 +458,10 @@ export class RegistrationService {
       const filePath = gallery.url.split('/image/')[1];
       await this.uploadService.deleteSingleFile(filePath);
     } catch (error) {
-      this.logger.error(`Failed to delete gallery and file for ID ${id}:`, error);
+      this.logger.error(
+        `Failed to delete gallery and file for ID ${id}:`,
+        error,
+      );
     }
   }
-
-
 }

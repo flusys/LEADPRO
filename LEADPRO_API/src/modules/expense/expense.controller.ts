@@ -1,11 +1,7 @@
-import {
-  Controller,
-  UseFilters,
-  UseGuards,
-} from '@nestjs/common';
-import { TypeOrmExceptionFilter } from "@flusys/flusysnest/shared/errors";
-import { JwtAuthGuard } from "@flusys/flusysnest/core/guards";
-import { ApiController } from '@flusys/flusysnest/shared/apis';
+import { ApiController } from '@flusys/flusysnest/shared/classes';
+import { TypeOrmExceptionFilter } from '@flusys/flusysnest/shared/errors';
+import { JwtAuthGuard } from '@flusys/flusysnest/shared/guards';
+import { Controller, UseFilters, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { ExpenseDto } from './expense.dto';
 import { IExpense } from './expense.interface';
@@ -16,11 +12,11 @@ import { ExpenseService } from './expense.service';
 @UseFilters(TypeOrmExceptionFilter)
 @UseGuards(JwtAuthGuard)
 export class ExpenseController extends ApiController<
-ExpenseDto,
-IExpense,
-ExpenseService
+  ExpenseDto,
+  IExpense,
+  ExpenseService
 > {
-constructor(protected expenseService:ExpenseService) {
-  super(expenseService);
-}
+  constructor(protected expenseService: ExpenseService) {
+    super(expenseService);
+  }
 }
