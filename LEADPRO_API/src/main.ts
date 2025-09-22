@@ -17,11 +17,11 @@ async function bootstrap() {
     }),
   });
 
-  // Seed Package Data;
+  //  Seed Package Data;
   const dataSource = app.get(DataSource);
   // await seedData(dataSource);
-  //  await seedMenuV1Data(dataSource);
-  //  await seedMenuV2Data(dataSource);
+  // await seedMenuV1Data(dataSource);
+  // await seedMenuV2Data(dataSource);
 
   app.enableCors({
     origin: envConfig.getOrigins(),

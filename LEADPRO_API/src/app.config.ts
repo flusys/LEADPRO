@@ -1,31 +1,28 @@
-import { ENTITY_ARRAY } from '@flusys/flusysnest/persistence/entities';
-import { DataSource } from 'typeorm';
-import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import 'reflect-metadata';
+
 import { envConfig } from '@flusys/flusysnest/core/config';
 import { IAppConfig } from '@flusys/flusysnest/core/interfaces';
+import { ENTITY_ARRAY } from '@flusys/flusysnest/persistence/entities';
 import { PermissionSubscriber } from '@flusys/flusysnest/persistence/event-subscriber';
+import { DataSource } from 'typeorm';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 export const appDataSource = new DataSource({
-    type: 'mysql',
-    ...envConfig.getTypeOrmConfig(),
-    entities: [
-        ...ENTITY_ARRAY,
-        __dirname + '/**/*.entity{.ts,.js}'
-    ],
-    migrationsTableName: 'migrations',
-    migrations: [
-        __dirname + '/persistence/migrations/*{.ts,.js}'
-    ],
-    migrationsRun: false,
-    synchronize: false,
-    namingStrategy: new SnakeNamingStrategy(),
-    subscribers: [PermissionSubscriber],
+  type: 'mysql',
+  ...envConfig.getTypeOrmConfig(),
+  entities: [...ENTITY_ARRAY, __dirname + '/**/*.entity{.ts,.js}'],
+  migrationsTableName: 'migrations',
+  migrations: [__dirname + '/persistence/migrations/*{.ts,.js}'],
+  migrationsRun: false,
+  synchronize: false,
+  namingStrategy: new SnakeNamingStrategy(),
+  subscribers: [PermissionSubscriber],
 });
 
 export const appconfig = (): IAppConfig => ({
-    userJwtSecret: 'project2025',
-    userTokenCookieName: 'refreshToken',
-    userTokenExpiredTime: 24 * 60 * 60,
-    userRefreshTokenExpiredTime: 168 * 60 * 60,
-    uploader: 'file',
+  userJwtSecret: 'project2025',
+  userTokenCookieName: 'refreshToken',
+  userTokenExpiredTime: 24 * 60 * 60,
+  userRefreshTokenExpiredTime: 168 * 60 * 60,
+  uploader: 'file',
 });

@@ -1,146 +1,279 @@
 <div class="card">
-    <p class="p-panel-title mb-8">🪪 Other Information</p>
-    <form [formGroup]="profileInfoFormService.formGroup" class="mt-4" (ngSubmit)="submit()">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <!-- Father Name -->
-            <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
-                <label for="fatherName">Father's Name <span class="text-red-500">*</span></label>
-                <input pInputText formControlName="fatherName" id="fatherName" class="w-full" type="text"
-                    appEditModeElementChanger [isEditMode]="isEditMode()" />
-                @if (getError('fatherName')) {
-                <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('fatherName') }}</small>
-                }
-            </div>
-
-            <!-- Mother Name -->
-            <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
-                <label for="motherName">Mother's Name <span class="text-red-500">*</span></label>
-                <input pInputText formControlName="motherName" id="motherName" class="w-full" type="text"
-                    appEditModeElementChanger [isEditMode]="isEditMode()" />
-                @if (getError('motherName')) {
-                <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('motherName') }}</small>
-                }
-            </div>
-
-            <!-- Marital Status -->
-            <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
-                <label for="maritalStatus">Marital Status <span class="text-red-500">*</span></label>
-                <p-select [options]="maritalStatusOptions" formControlName="maritalStatus" id="maritalStatus"
-                    placeholder="Select one" class="w-full" appEditModeElementChanger [isEditMode]="isEditMode()" />
-                @if (getError('maritalStatus')) {
-                <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('maritalStatus') }}</small>
-                }
-            </div>
-
-
-            <!-- Profession -->
-            <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
-                <label for="profession">Profession <span class="text-red-500">*</span></label>
-                <input pInputText formControlName="profession" id="profession" class="w-full" type="text"
-                    appEditModeElementChanger [isEditMode]="isEditMode()" />
-                @if (getError('profession')) {
-                <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('profession') }}</small>
-                }
-            </div>
-
-            <!-- Present Address -->
-            <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
-                <label for="presentAddress">Present Address <span class="text-red-500">*</span></label>
-                <textarea pInputTextarea formControlName="presentAddress" id="presentAddress" class="w-full" rows="1"
-                    appEditModeElementChanger [isEditMode]="isEditMode()"></textarea>
-                @if (getError('presentAddress')) {
-                <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('presentAddress') }}</small>
-                }
-            </div>
-
-            <!-- Permanent Address -->
-            <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
-                <label for="permanentAddress">Permanent Address <span class="text-red-500">*</span></label>
-                <textarea pInputTextarea formControlName="permanentAddress" id="permanentAddress" class="w-full"
-                    rows="1" appEditModeElementChanger [isEditMode]="isEditMode()"></textarea>
-                @if (getError('permanentAddress')) {
-                <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('permanentAddress') }}</small>
-                }
-            </div>
-
-            <!-- Nominee Name -->
-            <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
-                <label for="nomineeName">Nominee Name <span class="text-red-500">*</span></label>
-                <input pInputText formControlName="nomineeName" id="nomineeName" class="w-full" type="text"
-                    appEditModeElementChanger [isEditMode]="isEditMode()" />
-                @if (getError('nomineeName')) {
-                <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('nomineeName') }}</small>
-                }
-            </div>
-
-            <!-- Relation with Nominee -->
-            <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
-                <label for="relationWithNominee">Relation with Nominee <span class="text-red-500">*</span></label>
-                <input pInputText formControlName="relationWithNominee" id="relationWithNominee" class="w-full"
-                    type="text" appEditModeElementChanger [isEditMode]="isEditMode()" />
-                @if (getError('relationWithNominee')) {
-                <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('relationWithNominee') }}</small>
-                }
-            </div>
-
-            <!-- Comments -->
-            <div class="flex flex-col gap-2 w-full">
-                <label for="comments">Comments</label>
-                <textarea pInputTextarea formControlName="comments" id="comments" class="w-full" rows="1"
-                    appEditModeElementChanger [isEditMode]="isEditMode()"></textarea>
-            </div>
-
-            <!-- Cash By -->
-            <div class="flex flex-wrap gap-2 w-full">
-                <label for="referUserId">Refer By (User)</label>
-                <lib-user-select [isEditMode]="isEditMode()" [componentFormControl]="getControl('referUserId')"
-                    class="w-full" [selectedValue]="editSelectedReferUser()" placeHolder="Select Refer User" />
-            </div>
-
-            <!-- NID Upload -->
-            <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
-                <div class="flex flex-row gap-2 justify-between">
-                    <div class="flex flex-col gap-2 justify-between">
-                        <label>NID File/Photo with Signature <span class="text-red-500">*</span></label>
-                        <input type="file" accept="image/*,application/pdf" (change)="onFileChange($event, 'nidPhoto')"
-                            appEditModeElementChanger [isEditMode]="isEditMode()" />
-                    </div>
-                    @if(profileInfoFormService.value.nidPhotoUrl){
-                    <img [src]="profileInfoFormService.value.nidPhotoUrl" alt="image"
-                        class="w-[100px] h-[80px] rounded-[10px] border" />
-                    }
-                </div>
-                <!-- Preview for NID Photo -->
-                @if (getError('nidPhoto')) {
-                <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('nidPhoto') }}</small>
-                }
-            </div>
-
-            <div class="flex flex-col gap-2 w-full">
-                <div class="flex flex-row gap-2 justify-between">
-                    <div class="flex flex-col gap-2 justify-between">
-                        <label>Nominee NID File/Photo <span class="text-red-500">*</span></label>
-                        <input type="file" accept="image/*,application/pdf"
-                            (change)="onFileChange($event, 'nomineeNidPhoto')" appEditModeElementChanger
-                            [isEditMode]="isEditMode()" />
-                    </div>
-                    @if(profileInfoFormService.value.nomineeNidPhotoUrl){
-                    <img [src]="profileInfoFormService.value.nomineeNidPhotoUrl" alt="image"
-                        class="w-[100px] h-[80px] rounded-[10px] border" />
-                    }
-                </div>
-                <!-- Preview for NID Photo -->
-                @if (getError('nidPhoto')) {
-                <small class="absolute -bottom-1 text-red-500 text-xs">{{ getError('nidPhoto') }}</small>
-                }
-            </div>
-        </div>
-        @if(isEditMode()){
-        <!-- Action Buttons -->
-        <div class="flex gap-2 justify-end mt-5">
-            <button pButton type="submit" label="Update" icon="pi pi-check"
-                [disabled]="profileInfoFormService.formGroup.invalid"></button>
-        </div>
+  <p class="p-panel-title mb-8">🪪 Other Information</p>
+  <form
+    [formGroup]="profileInfoFormService.formGroup"
+    class="mt-4"
+    (ngSubmit)="submit()"
+  >
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <!-- Father Name -->
+      <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
+        <label for="fatherName"
+          >Father's Name <span class="text-red-500">*</span></label
+        >
+        <input
+          pInputText
+          formControlName="fatherName"
+          id="fatherName"
+          class="w-full"
+          type="text"
+          appEditModeElementChanger
+          [isEditMode]="isEditMode()"
+        />
+        @if (getError('fatherName')) {
+        <small class="absolute -bottom-1 text-red-500 text-xs">{{
+          getError("fatherName")
+        }}</small>
         }
-    </form>
+      </div>
+
+      <!-- Mother Name -->
+      <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
+        <label for="motherName"
+          >Mother's Name <span class="text-red-500">*</span></label
+        >
+        <input
+          pInputText
+          formControlName="motherName"
+          id="motherName"
+          class="w-full"
+          type="text"
+          appEditModeElementChanger
+          [isEditMode]="isEditMode()"
+        />
+        @if (getError('motherName')) {
+        <small class="absolute -bottom-1 text-red-500 text-xs">{{
+          getError("motherName")
+        }}</small>
+        }
+      </div>
+
+      <!-- Marital Status -->
+      <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
+        <label for="maritalStatus"
+          >Marital Status <span class="text-red-500">*</span></label
+        >
+        <p-select
+          [options]="maritalStatusOptions"
+          formControlName="maritalStatus"
+          id="maritalStatus"
+          placeholder="Select one"
+          class="w-full"
+          appEditModeElementChanger
+          [isEditMode]="isEditMode()"
+        />
+        @if (getError('maritalStatus')) {
+        <small class="absolute -bottom-1 text-red-500 text-xs">{{
+          getError("maritalStatus")
+        }}</small>
+        }
+      </div>
+
+      <!-- Profession -->
+      <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
+        <label for="profession"
+          >Profession <span class="text-red-500">*</span></label
+        >
+        <input
+          pInputText
+          formControlName="profession"
+          id="profession"
+          class="w-full"
+          type="text"
+          appEditModeElementChanger
+          [isEditMode]="isEditMode()"
+        />
+        @if (getError('profession')) {
+        <small class="absolute -bottom-1 text-red-500 text-xs">{{
+          getError("profession")
+        }}</small>
+        }
+      </div>
+
+      <!-- Present Address -->
+      <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
+        <label for="presentAddress"
+          >Present Address <span class="text-red-500">*</span></label
+        >
+        <textarea
+          pInputTextarea
+          formControlName="presentAddress"
+          id="presentAddress"
+          class="w-full"
+          rows="1"
+          appEditModeElementChanger
+          [isEditMode]="isEditMode()"
+        ></textarea>
+        @if (getError('presentAddress')) {
+        <small class="absolute -bottom-1 text-red-500 text-xs">{{
+          getError("presentAddress")
+        }}</small>
+        }
+      </div>
+
+      <!-- Permanent Address -->
+      <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
+        <label for="permanentAddress"
+          >Permanent Address <span class="text-red-500">*</span></label
+        >
+        <textarea
+          pInputTextarea
+          formControlName="permanentAddress"
+          id="permanentAddress"
+          class="w-full"
+          rows="1"
+          appEditModeElementChanger
+          [isEditMode]="isEditMode()"
+        ></textarea>
+        @if (getError('permanentAddress')) {
+        <small class="absolute -bottom-1 text-red-500 text-xs">{{
+          getError("permanentAddress")
+        }}</small>
+        }
+      </div>
+
+      <!-- Nominee Name -->
+      <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
+        <label for="nomineeName"
+          >Nominee Name <span class="text-red-500">*</span></label
+        >
+        <input
+          pInputText
+          formControlName="nomineeName"
+          id="nomineeName"
+          class="w-full"
+          type="text"
+          appEditModeElementChanger
+          [isEditMode]="isEditMode()"
+        />
+        @if (getError('nomineeName')) {
+        <small class="absolute -bottom-1 text-red-500 text-xs">{{
+          getError("nomineeName")
+        }}</small>
+        }
+      </div>
+
+      <!-- Relation with Nominee -->
+      <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
+        <label for="relationWithNominee"
+          >Relation with Nominee <span class="text-red-500">*</span></label
+        >
+        <input
+          pInputText
+          formControlName="relationWithNominee"
+          id="relationWithNominee"
+          class="w-full"
+          type="text"
+          appEditModeElementChanger
+          [isEditMode]="isEditMode()"
+        />
+        @if (getError('relationWithNominee')) {
+        <small class="absolute -bottom-1 text-red-500 text-xs">{{
+          getError("relationWithNominee")
+        }}</small>
+        }
+      </div>
+
+      <!-- Comments -->
+      <div class="flex flex-col gap-2 w-full">
+        <label for="comments">Comments</label>
+        <textarea
+          pInputTextarea
+          formControlName="comments"
+          id="comments"
+          class="w-full"
+          rows="1"
+          appEditModeElementChanger
+          [isEditMode]="isEditMode()"
+        ></textarea>
+      </div>
+
+      <!-- Cash By -->
+      <div class="flex flex-wrap gap-2 w-full">
+        <label for="referUserId">Refer By (User)</label>
+        <lib-user-select
+          [isEditMode]="isEditMode()"
+          [componentFormControl]="getControl('referUserId')"
+          class="w-full"
+          [selectedValue]="editSelectedReferUser()"
+          placeHolder="Select Refer User"
+          [filter]="{ isActive: true }"
+        />
+      </div>
+
+      <!-- NID Upload -->
+      <div class="relative flex flex-col gap-2 w-full min-h-[66px]">
+        <div class="flex flex-row gap-2 justify-between">
+          <div class="flex flex-col gap-2 justify-between">
+            <label
+              >NID File/Photo with Signature
+              <span class="text-red-500">*</span></label
+            >
+            <input
+              type="file"
+              accept="image/*,application/pdf"
+              (change)="onFileChange($event, 'nidPhoto')"
+              appEditModeElementChanger
+              [isEditMode]="isEditMode()"
+            />
+          </div>
+          @if(profileInfoFormService.value.nidPhotoUrl){
+          <img
+            [src]="profileInfoFormService.value.nidPhotoUrl"
+            alt="image"
+            class="w-[100px] h-[80px] rounded-[10px] border"
+          />
+          }
+        </div>
+        <!-- Preview for NID Photo -->
+        @if (getError('nidPhoto')) {
+        <small class="absolute -bottom-1 text-red-500 text-xs">{{
+          getError("nidPhoto")
+        }}</small>
+        }
+      </div>
+
+      <div class="flex flex-col gap-2 w-full">
+        <div class="flex flex-row gap-2 justify-between">
+          <div class="flex flex-col gap-2 justify-between">
+            <label
+              >Nominee NID File/Photo <span class="text-red-500">*</span></label
+            >
+            <input
+              type="file"
+              accept="image/*,application/pdf"
+              (change)="onFileChange($event, 'nomineeNidPhoto')"
+              appEditModeElementChanger
+              [isEditMode]="isEditMode()"
+            />
+          </div>
+          @if(profileInfoFormService.value.nomineeNidPhotoUrl){
+          <img
+            [src]="profileInfoFormService.value.nomineeNidPhotoUrl"
+            alt="image"
+            class="w-[100px] h-[80px] rounded-[10px] border"
+          />
+          }
+        </div>
+        <!-- Preview for NID Photo -->
+        @if (getError('nidPhoto')) {
+        <small class="absolute -bottom-1 text-red-500 text-xs">{{
+          getError("nidPhoto")
+        }}</small>
+        }
+      </div>
+    </div>
+    @if(isEditMode()){
+    <!-- Action Buttons -->
+    <div class="flex gap-2 justify-end mt-5">
+      <button
+        pButton
+        type="submit"
+        label="Update"
+        icon="pi pi-check"
+        [disabled]="profileInfoFormService.formGroup.invalid"
+      ></button>
+    </div>
+    }
+  </form>
 </div>

@@ -1,40 +1,86 @@
-<p-panel header="💵 Cash Entry" [toggleable]="true" [collapsed]="isPanelCollapsed" class="line-height-3 m-0">
-    <form #inputForm="ngForm" [formGroup]="cashFormService.formGroup" (ngSubmit)="onSubmit()">
-        <div class="grid grid-cols-3 gap-4">
+<p-panel
+  header="💵 Cash Entry"
+  [toggleable]="true"
+  [collapsed]="isPanelCollapsed"
+  class="line-height-3 m-0"
+>
+  <form
+    #inputForm="ngForm"
+    [formGroup]="cashFormService.formGroup"
+    (ngSubmit)="onSubmit()"
+  >
+    <div class="grid grid-cols-3 gap-4">
+      <!-- Cash By -->
+      <div class="flex flex-wrap gap-2 w-full">
+        <label for="cashById">Cash By (User)</label>
+        <lib-user-select
+          [isEditMode]="true"
+          [componentFormControl]="getControl('cashById')"
+          class="w-full"
+          [selectedValue]="cashBy()"
+          placeHolder="Select Cash By"
+          [filter]="{ isActive: true }"
+        />
+      </div>
 
-            <!-- Cash By -->
-            <div class="flex flex-wrap gap-2 w-full">
-                <label for="cashById">Cash By (User)</label>
-                <lib-user-select [isEditMode]="true" [componentFormControl]="getControl('cashById')"  class="w-full"
-                [selectedValue]="cashBy()" placeHolder="Select Cash By" />
-            </div>
+      <!-- Amount -->
+      <div class="flex flex-wrap gap-2 w-full">
+        <label for="amount">Amount</label>
+        <input
+          pInputText
+          formControlName="amount"
+          class="w-full"
+          id="amount"
+          type="number"
+          appZeroToNull
+        />
+      </div>
 
-            <!-- Amount -->
-            <div class="flex flex-wrap gap-2 w-full">
-                <label for="amount">Amount</label>
-                <input pInputText formControlName="amount" class="w-full" id="amount" type="number" appZeroToNull/>
-            </div>
+      <!-- Type -->
+      <div class="flex flex-wrap gap-2 w-full">
+        <label for="type">Type</label>
+        <p-select
+          formControlName="type"
+          [options]="cashStateService.transactionTypes()"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Select Type"
+          class="w-full"
+          inputId="type"
+        >
+        </p-select>
+      </div>
 
-            <!-- Type -->
-            <div class="flex flex-wrap gap-2 w-full">
-                <label for="type">Type</label>
-                <p-select formControlName="type" [options]="cashStateService.transactionTypes()" optionLabel="label"
-                    optionValue="value" placeholder="Select Type" class="w-full" inputId="type">
-                </p-select>
-            </div>
+      <!-- Note -->
+      <div class="flex flex-wrap gap-2 w-full col-span-3">
+        <label for="note">Note</label>
+        <textarea
+          pInputTextarea
+          formControlName="note"
+          rows="3"
+          class="w-full"
+          id="note"
+        ></textarea>
+      </div>
+    </div>
 
-            <!-- Note -->
-            <div class="flex flex-wrap gap-2 w-full col-span-3">
-                <label for="note">Note</label>
-                <textarea pInputTextarea formControlName="note" rows="3" class="w-full" id="note"></textarea>
-            </div>
-
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="flex gap-2 justify-end mt-4">
-            <button pButton pRipple type="submit" [label]="model ? 'Update' : 'Save'" icon="pi pi-check"></button>
-            <button pButton pRipple type="button" label="Clear" icon="pi pi-trash" (click)="clearInputForm()"></button>
-        </div>
-    </form>
+    <!-- Action Buttons -->
+    <div class="flex gap-2 justify-end mt-4">
+      <button
+        pButton
+        pRipple
+        type="submit"
+        [label]="model ? 'Update' : 'Save'"
+        icon="pi pi-check"
+      ></button>
+      <button
+        pButton
+        pRipple
+        type="button"
+        label="Clear"
+        icon="pi pi-trash"
+        (click)="clearInputForm()"
+      ></button>
+    </div>
+  </form>
 </p-panel>

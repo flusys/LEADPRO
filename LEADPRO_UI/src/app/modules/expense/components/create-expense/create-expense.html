@@ -1,46 +1,99 @@
-<p-panel header="💰 Expense Entry" [toggleable]="true" [collapsed]="isPanelCollapsed" class="line-height-3 m-0">
-    <form #inputForm="ngForm" [formGroup]="expenseFormService.formGroup" (ngSubmit)="onSubmit()">
-        <div class="grid grid-cols-3 gap-4">
+<p-panel
+  header="💰 Expense Entry"
+  [toggleable]="true"
+  [collapsed]="isPanelCollapsed"
+  class="line-height-3 m-0"
+>
+  <form
+    #inputForm="ngForm"
+    [formGroup]="expenseFormService.formGroup"
+    (ngSubmit)="onSubmit()"
+  >
+    <div class="grid grid-cols-3 gap-4">
+      <!-- Title -->
+      <div class="flex flex-wrap gap-2 w-full">
+        <label for="title">Title</label>
+        <input
+          pInputText
+          formControlName="title"
+          class="w-full"
+          id="title"
+          name="Title"
+          type="text"
+        />
+      </div>
 
-            <!-- Title -->
-            <div class="flex flex-wrap gap-2 w-full">
-                <label for="title">Title</label>
-                <input pInputText formControlName="title" class="w-full" id="title" name="Title" type="text" />
-            </div>
+      <!-- Amount -->
+      <div class="flex flex-wrap gap-2 w-full">
+        <label for="amount">Amount</label>
+        <input
+          pInputText
+          formControlName="amount"
+          class="w-full"
+          id="amount"
+          name="Amount"
+          type="number"
+          appZeroToNull
+        />
+      </div>
 
-            <!-- Amount -->
-            <div class="flex flex-wrap gap-2 w-full">
-                <label for="amount">Amount</label>
-                <input pInputText formControlName="amount" class="w-full" id="amount" name="Amount" type="number"
-                    appZeroToNull />
-            </div>
+      <!-- Type -->
+      <div class="flex flex-wrap gap-2 w-full">
+        <label for="type">Expense Type</label>
+        <p-select
+          formControlName="type"
+          [options]="expenseStateService.expenseTypes()"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Select Type"
+          class="w-full"
+          inputId="type"
+        >
+        </p-select>
+      </div>
+      <!-- Recorded By -->
+      <div class="flex flex-wrap gap-2 w-full">
+        <label for="recordedById">Recorded By (User ID)</label>
+        <lib-user-select
+          [isEditMode]="true"
+          [componentFormControl]="getControl('recordedById')"
+          class="w-full"
+          [selectedValue]="recordedBy()"
+          placeHolder="Select Recorded By"
+          [filter]="{ isActive: true }"
+        />
+      </div>
+      <!-- Description -->
+      <div class="flex flex-wrap gap-2 w-full col-span-3">
+        <label for="description">Description</label>
+        <textarea
+          pInputTextarea
+          formControlName="description"
+          rows="3"
+          class="w-full"
+          id="description"
+          name="Description"
+        ></textarea>
+      </div>
+    </div>
 
-            <!-- Type -->
-            <div class="flex flex-wrap gap-2 w-full">
-                <label for="type">Expense Type</label>
-                <p-select formControlName="type" [options]="expenseStateService.expenseTypes()" optionLabel="label"
-                    optionValue="value" placeholder="Select Type" class="w-full" inputId="type">
-                </p-select>
-            </div>
-            <!-- Recorded By -->
-            <div class="flex flex-wrap gap-2 w-full">
-                <label for="recordedById">Recorded By (User ID)</label>
-                <lib-user-select [isEditMode]="true" [componentFormControl]="getControl('recordedById')" class="w-full"
-                    [selectedValue]="recordedBy()" placeHolder="Select Recorded By" />
-            </div>
-            <!-- Description -->
-            <div class="flex flex-wrap gap-2 w-full col-span-3">
-                <label for="description">Description</label>
-                <textarea pInputTextarea formControlName="description" rows="3" class="w-full" id="description"
-                    name="Description"></textarea>
-            </div>
-
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="flex gap-2 justify-end mt-4">
-            <button pButton pRipple type="submit" [label]="model ? 'Update' : 'Save'" icon="pi pi-check"></button>
-            <button pButton pRipple type="button" label="Clear" icon="pi pi-trash" (click)="clearInputForm()"></button>
-        </div>
-    </form>
+    <!-- Action Buttons -->
+    <div class="flex gap-2 justify-end mt-4">
+      <button
+        pButton
+        pRipple
+        type="submit"
+        [label]="model ? 'Update' : 'Save'"
+        icon="pi pi-check"
+      ></button>
+      <button
+        pButton
+        pRipple
+        type="button"
+        label="Clear"
+        icon="pi pi-trash"
+        (click)="clearInputForm()"
+      ></button>
+    </div>
+  </form>
 </p-panel>
