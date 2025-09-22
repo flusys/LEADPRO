@@ -29,7 +29,7 @@
     "@angular/platform-server": "^20.0.0",
     "@angular/router": "^20.0.0",
     "@angular/ssr": "^20.0.4",
-    "@flusys/flusysng": "^3.0.0",
+    "@flusys/flusysng": "^4.0.0-rc.0",
     "@primeuix/themes": "^1.2.1",
     "express": "^5.1.0",
     "primeicons": "^7.0.0",
