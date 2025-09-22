@@ -1,9 +1,10 @@
+import 'reflect-metadata';
+
 import { envConfig } from '@flusys/flusysnest/core/config';
 import { instance } from '@flusys/flusysnest/shared/classes';
 import { TransformResponseInterceptor } from '@flusys/flusysnest/shared/interceptors';
 import { VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 import { WinstonModule } from 'nest-winston';
 import { DataSource } from 'typeorm';
@@ -41,15 +42,15 @@ async function bootstrap() {
   // Global Prefix
   // app.setGlobalPrefix('api');
 
-  const config = new DocumentBuilder()
-    .addBearerAuth()
-    .setTitle('Billings example')
-    .setDescription('The Billings API description')
-    .setVersion('1.0')
-    .addTag('Billings')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document);
+  // const config = new DocumentBuilder()
+  //   .addBearerAuth()
+  //   .setTitle('Billings example')
+  //   .setDescription('The Billings API description')
+  //   .setVersion('1.0')
+  //   .addTag('Billings')
+  //   .build();
+  // const document = SwaggerModule.createDocument(app, config);
+  // SwaggerModule.setup('docs', app, document);
 
   const port = envConfig.getPort() || 3000;
   await app.listen(port);

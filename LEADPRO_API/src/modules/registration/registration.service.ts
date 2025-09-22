@@ -20,7 +20,6 @@ import {
   IResponsePayload,
 } from '@flusys/flusysnest/shared/interfaces';
 import { UtilsService } from '@flusys/flusysnest/shared/modules';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import {
   BadRequestException,
   ConflictException,
@@ -52,7 +51,7 @@ export class RegistrationService {
     private utilsService: UtilsService,
     private uploadService: UploadService,
     private dataSource: DataSource,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    @Inject('CACHE_INSTANCE') private cacheManager: Cache,
   ) {}
 
   async registerUser(
