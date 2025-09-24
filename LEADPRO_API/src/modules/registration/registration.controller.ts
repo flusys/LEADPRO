@@ -1,6 +1,6 @@
 import { UploadService } from '@flusys/flusysnest/modules/gallery/apis';
 import { IUser } from '@flusys/flusysnest/modules/settings/interfaces';
-import { User } from '@flusys/flusysnest/shared/decorators';
+import { CurrentUser } from '@flusys/flusysnest/shared/decorators';
 import { JwtAuthGuard } from '@flusys/flusysnest/shared/guards';
 import {
   IFileUploadResponse,
@@ -87,7 +87,7 @@ export class RegistrationController {
   @UsePipes(ValidationPipe)
   @UseGuards(JwtAuthGuard)
   async getOwnProfile(
-    @User() user: ILoggedUserInfo,
+    @CurrentUser() user: ILoggedUserInfo,
   ): Promise<IResponsePayload<IProfileInfo>> {
     return await this.registrationService.findById(user.id, user); // or your own logic
   }
@@ -98,7 +98,7 @@ export class RegistrationController {
   @UseGuards(JwtAuthGuard)
   async getById(
     @Param('id') id: string,
-    @User() user: ILoggedUserInfo,
+    @CurrentUser() user: ILoggedUserInfo,
   ): Promise<IResponsePayload<IProfileInfo>> {
     return await this.registrationService.findById(id, user);
   }
@@ -115,7 +115,7 @@ export class RegistrationController {
   @UseGuards(JwtAuthGuard)
   async updateProfile(
     @Param('id') id: string,
-    @User() user: ILoggedUserInfo,
+    @CurrentUser() user: ILoggedUserInfo,
     @Body() registrationDto: ProfileInfoDto,
     @UploadedFiles()
     files: {

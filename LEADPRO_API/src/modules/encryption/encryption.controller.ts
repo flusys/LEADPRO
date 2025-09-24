@@ -1,6 +1,6 @@
 import { envConfig } from '@flusys/flusysnest/core/config';
 import { ApiController } from '@flusys/flusysnest/shared/classes';
-import { User } from '@flusys/flusysnest/shared/decorators';
+import { CurrentUser } from '@flusys/flusysnest/shared/decorators';
 import { FilterAndPaginationDto } from '@flusys/flusysnest/shared/dtos';
 import { TypeOrmExceptionFilter } from '@flusys/flusysnest/shared/errors';
 import { JwtAuthGuard } from '@flusys/flusysnest/shared/guards';
@@ -61,7 +61,7 @@ export class EncryptionDataController extends ApiController<
   @Get('download-token/:key_id')
   async generateDownloadToken(
     @Param('key_id') keyId: string,
-    @User() user: ILoggedUserInfo,
+    @CurrentUser() user: ILoggedUserInfo,
   ): Promise<{ message: string }> {
     try {
       // 1️⃣ Generate a secure token

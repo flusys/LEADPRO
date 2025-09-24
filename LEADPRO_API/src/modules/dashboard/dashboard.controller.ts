@@ -1,5 +1,5 @@
 // src/dashboard/dashboard.controller.ts
-import { User } from '@flusys/flusysnest/shared/decorators';
+import { CurrentUser } from '@flusys/flusysnest/shared/decorators';
 import { JwtAuthGuard } from '@flusys/flusysnest/shared/guards';
 import { ILoggedUserInfo } from '@flusys/flusysnest/shared/interfaces';
 import { Controller, Get, UseGuards } from '@nestjs/common';
@@ -14,7 +14,9 @@ export class DashboardController {
   constructor(private readonly dashboardService: DashboardService) {}
 
   @Get()
-  async getDashboard(@User() user: ILoggedUserInfo): Promise<IDashboard> {
+  async getDashboard(
+    @CurrentUser() user: ILoggedUserInfo,
+  ): Promise<IDashboard> {
     return this.dashboardService.getDashboardData(user);
   }
 
