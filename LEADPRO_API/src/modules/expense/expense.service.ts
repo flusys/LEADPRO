@@ -1,5 +1,6 @@
 import { User } from '@flusys/flusysnest/persistence/entities';
 import { ApiService, HybridCache } from '@flusys/flusysnest/shared/classes';
+import { ILoggedUserInfo } from '@flusys/flusysnest/shared/interfaces';
 import { UtilsService } from '@flusys/flusysnest/shared/modules';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -30,7 +31,10 @@ export class ExpenseService extends ApiService<
     );
   }
 
-  override async convertSingleDtoToEntity(dto: ExpenseDto): Promise<Expense> {
+  override async convertSingleDtoToEntity(
+    dto: ExpenseDto,
+    user: ILoggedUserInfo,
+  ): Promise<Expense> {
     let expense = new Expense();
     if (dto.id && dto.id && dto.id != '') {
       const dbData = await this.repository.findOne({
@@ -56,6 +60,7 @@ export class ExpenseService extends ApiService<
 
   override async getSelectQuery(
     query: SelectQueryBuilder<Expense>,
+    user: ILoggedUserInfo,
     select?: string[],
   ) {
     if (!select || !select.length) {

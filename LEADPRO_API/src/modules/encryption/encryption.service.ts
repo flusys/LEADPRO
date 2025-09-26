@@ -1,6 +1,7 @@
 import { User } from '@flusys/flusysnest/persistence/entities';
 import { ApiService, HybridCache } from '@flusys/flusysnest/shared/classes';
 import { FilterAndPaginationDto } from '@flusys/flusysnest/shared/dtos';
+import { ILoggedUserInfo } from '@flusys/flusysnest/shared/interfaces';
 import { UtilsService } from '@flusys/flusysnest/shared/modules';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -28,11 +29,13 @@ export class EncryptionKeyService extends ApiService<
       cacheManager,
       utilsService,
       EncryptionKeyService.name,
+      true,
     );
   }
 
   override async convertSingleDtoToEntity(
     dto: EncryptionKeyDto,
+    user: ILoggedUserInfo,
   ): Promise<EncryptionKey> {
     let key = new EncryptionKey();
     if (dto.id && dto.id !== '') {
@@ -47,13 +50,13 @@ export class EncryptionKeyService extends ApiService<
       key = {
         ...dbData,
         ...dto,
-        user: { id: dto['updatedBy'].id } as User,
+        user: { id: user.id } as User,
       };
     } else {
       key = {
         ...key,
         ...dto,
-        user: { id: dto['createdBy'].id } as User,
+        user: { id: user.id } as User,
       };
     }
     return key;
@@ -62,10 +65,11 @@ export class EncryptionKeyService extends ApiService<
   protected async getExtraManipulateQuery(
     query: SelectQueryBuilder<EncryptionKey>,
     dto: FilterAndPaginationDto,
+    user: ILoggedUserInfo,
   ) {
     query.innerJoin('encrypted_key.user', 'user');
     query.andWhere(`user.id = :userId`, {
-      userId: dto['user'].id,
+      userId: user.id,
     });
     return { query, isRaw: false };
   }
@@ -90,11 +94,13 @@ export class EncryptionDataService extends ApiService<
       cacheManager,
       utilsService,
       EncryptionDataService.name,
+      true,
     );
   }
 
   override async getSelectQuery(
     query: SelectQueryBuilder<EncryptionData>,
+    user: ILoggedUserInfo | null,
     select?: string[],
   ) {
     if (!select || !select.length) {
@@ -116,6 +122,7 @@ export class EncryptionDataService extends ApiService<
   override async getFilterQuery(
     query: SelectQueryBuilder<EncryptionData>,
     filter: { [key: string]: any },
+    user: ILoggedUserInfo,
   ): Promise<{ query: SelectQueryBuilder<EncryptionData>; isRaw: boolean }> {
     Object.entries(filter).forEach(([key, value]) => {
       if (key == 'key_id') {
@@ -129,6 +136,7 @@ export class EncryptionDataService extends ApiService<
 
   override async convertSingleDtoToEntity(
     dto: EncryptionDataDto,
+    user: ILoggedUserInfo,
   ): Promise<EncryptionData> {
     let key = new EncryptionData();
     if (dto.id && dto.id !== '') {

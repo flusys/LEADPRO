@@ -1,5 +1,6 @@
 import { User } from '@flusys/flusysnest/persistence/entities';
 import { ApiService, HybridCache } from '@flusys/flusysnest/shared/classes';
+import { ILoggedUserInfo } from '@flusys/flusysnest/shared/interfaces';
 import { UtilsService } from '@flusys/flusysnest/shared/modules';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -16,15 +17,24 @@ export class CashService extends ApiService<
   Repository<Cash>
 > {
   constructor(
-    @InjectRepository(Cash)
-    protected readonly cashRepository: Repository<Cash>,
+    @InjectRepository(Cash) protected readonly cashRepository: Repository<Cash>,
     @Inject('CACHE_INSTANCE') protected cacheManager: HybridCache,
     protected utilsService: UtilsService,
   ) {
-    super('cash', cashRepository, cacheManager, utilsService, CashService.name);
+    super(
+      'cash',
+      cashRepository,
+      cacheManager,
+      utilsService,
+      CashService.name,
+      false,
+    );
   }
 
-  override async convertSingleDtoToEntity(dto: CashDto): Promise<Cash> {
+  override async convertSingleDtoToEntity(
+    dto: CashDto,
+    user: ILoggedUserInfo | null,
+  ): Promise<Cash> {
     let cash = new Cash();
     if (dto.id && dto.id && dto.id != '') {
       const dbData = await this.repository.findOne({
@@ -50,6 +60,7 @@ export class CashService extends ApiService<
 
   override async getSelectQuery(
     query: SelectQueryBuilder<Cash>,
+    user: ILoggedUserInfo | null,
     select?: string[],
   ) {
     if (!select || !select.length) {

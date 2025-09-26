@@ -132,16 +132,20 @@ export class EncryptedDownloadController {
     try {
       // 4️⃣ Fetch the data for this key_id
       const dataToDownload = (
-        await this.encryptedDataService.getAll('', {
-          filter: { key_id: keyId },
-          select: [
-            'id',
-            'key',
-            'storedEncryptionData',
-            'storedIV',
-            'storedEncryptionAESKey',
-          ],
-        } as unknown as FilterAndPaginationDto)
+        await this.encryptedDataService.getAll(
+          '',
+          {
+            filter: { key_id: keyId },
+            select: [
+              'id',
+              'key',
+              'storedEncryptionData',
+              'storedIV',
+              'storedEncryptionAESKey',
+            ],
+          } as unknown as FilterAndPaginationDto,
+          null,
+        )
       ).result;
 
       if (!dataToDownload || !dataToDownload.length) {
