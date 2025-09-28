@@ -206,12 +206,12 @@
         <div class="flex flex-row gap-2 justify-between">
           <div class="flex flex-col gap-2 justify-between">
             <label
-              >NID File/Photo with Signature
+              >NID Photo with Signature
               <span class="text-red-500">*</span></label
             >
             <input
               type="file"
-              accept="image/*,application/pdf"
+              accept="image/*"
               (change)="onFileChange($event, 'nidPhoto')"
               appEditModeElementChanger
               [isEditMode]="isEditMode()"
@@ -236,12 +236,10 @@
       <div class="flex flex-col gap-2 w-full">
         <div class="flex flex-row gap-2 justify-between">
           <div class="flex flex-col gap-2 justify-between">
-            <label
-              >Nominee NID File/Photo <span class="text-red-500">*</span></label
-            >
+            <label>Nominee NID Photo <span class="text-red-500">*</span></label>
             <input
               type="file"
-              accept="image/*,application/pdf"
+              accept="image/*"
               (change)="onFileChange($event, 'nomineeNidPhoto')"
               appEditModeElementChanger
               [isEditMode]="isEditMode()"
