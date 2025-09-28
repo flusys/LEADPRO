@@ -5,7 +5,7 @@ import { IconTypeEnum } from '@flusys/flusysnest/shared/enums';
 import { randomUUID } from 'crypto';
 import { DataSource } from 'typeorm';
 
-const menuIds = Array.from({ length: 3 }, () => randomUUID());
+const menuIds = Array.from({ length: 4 }, () => randomUUID());
 const menus: Array<IMenu> = [
   {
     id: menuIds[0],
@@ -41,7 +41,7 @@ const menus: Array<IMenu> = [
 
 const app = {
   isActive: true,
-  id: menuIds[2],
+  id: menuIds[3],
   iconType: IconTypeEnum.IMAGE_FILE_LINK,
   icon: 'https://cdn-icons-png.freepik.com/256/10789/10789141.png?semt=ais_white_label',
   name: 'Account',
