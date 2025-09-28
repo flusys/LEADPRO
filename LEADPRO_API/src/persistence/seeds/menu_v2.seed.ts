@@ -14,7 +14,7 @@ const menus: Array<IMenu> = [
     icon: 'pi pi-key',
     serial: 18,
     parent: null,
-  }
+  },
 ].map((menu) => ({
   ...menu,
   readOnly: false,
@@ -27,7 +27,7 @@ const app = {
   isActive: true,
   id: menuIds[2],
   iconType: IconTypeEnum.IMAGE_FILE_LINK,
-  icon: 'https://png.pngtree.com/png-clipart/20230417/original/pngtree-data-encryption-line-icon-png-image_9060715.png',
+  icon: 'https://cdn-icons-png.flaticon.com/512/2092/2092692.png',
   name: 'Encryption',
   slug: 'encryption',
 } as unknown as IApp;
